@@ -15,11 +15,11 @@ RUN Add-WindowsCapability -Online -Name OpenSSH.Server
 #     Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
 # }
 
-RUN New-LocalUser -Name username_123 -Password (ConvertTo-SecureString -AsPlainText password_123 -Force)
+RUN New-LocalUser -Name cmd -Password (ConvertTo-SecureString -AsPlainText cmd -Force)
 
 # RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name Shell -Value 'PowerShell.exe -NoExit'
 
-RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
+# RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
 
 # Expose port 22
 EXPOSE 22
