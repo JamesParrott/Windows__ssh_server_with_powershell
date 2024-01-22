@@ -5,18 +5,18 @@ RUN powershell -NoExit -Command "Add-WindowsFeature OpenSSH-Client; Enable-Windo
 # RUN powershell -NoExit -Command "Install-WindowsPackage xpsviewer"
 
 # Configure SSH server
-RUN powershell -NoExit -Command @"
-$sshConfig = New-Object System.Management.Automation.PSCustomObject
-$sshConfig.Add('ListenAddress', '0.0.0.0')
-$sshConfig.Add('Port', 22)
-$sshConfig.Add('ChrootDirectory', '%UserProfile%')
-$sshConfig.Add('LoginShell', 'cmd.exe')
-$sshConfig | ConvertTo-Xml | Format-List -OutFile -FilePath C:\ProgramData\ssh\sshd_config
+RUN powershell -NoExit -Command @" \
+$sshConfig = New-Object System.Management.Automation.PSCustomObject \
+$sshConfig.Add('ListenAddress', '0.0.0.0') \
+$sshConfig.Add('Port', 22) \
+$sshConfig.Add('ChrootDirectory', '%UserProfile%') \
+$sshConfig.Add('LoginShell', 'cmd.exe') \
+$sshConfig | ConvertTo-Xml | Format-List -OutFile -FilePath C:\ProgramData\ssh\sshd_config \
 "@
 
 # Configure service to run as Local System account
-RUN powershell -NoExit -Command @"
-New-Service -Name "sshd" -DisplayName "OpenSSH SSH Server" -StartupType Automatic -Description "Provides secure shell access." -Path "C:\Windows\System32\OpenSSH\sshd.exe" -Credential (Get-LocalUser -Name "SYSTEM") -PassThru
+RUN powershell -NoExit -Command @" \
+New-Service -Name "sshd" -DisplayName "OpenSSH SSH Server" -StartupType Automatic -Description "Provides secure shell access." -Path "C:\Windows\System32\OpenSSH\sshd.exe" -Credential (Get-LocalUser -Name "SYSTEM") -PassThru \
 "@
 
 # Start the service
