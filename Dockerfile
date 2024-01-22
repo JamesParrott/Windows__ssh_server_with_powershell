@@ -6,11 +6,6 @@ RUN Add-WindowsCapability -Online -Name OpenSSH.Client
 
 RUN Add-WindowsCapability -Online -Name OpenSSH.Server
 
-# Start the sshd service
-RUN Start-Service sshd
-
-# OPTIONAL but recommended:
-RUN Set-Service -Name sshd -StartupType 'Automatic'
 
 # # Confirm the Firewall rule is configured. It should be created automatically by setup. Run the following to verify
 # if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
@@ -19,6 +14,25 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 # } else {
 #     Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
 # }
+
+RUN New-LocalUser -Name username_123 -Password (ConvertTo-SecureString -AsPlainText password_123 -Force)
+
+# RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name Shell -Value 'PowerShell.exe -NoExit'
+
+RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
+
+# Expose port 22
+EXPOSE 22
+
+# Start the sshd service
+RUN Start-Service sshd
+
+# # OPTIONAL but recommended:
+# RUN Set-Service -Name sshd -StartupType 'Automatic'
+
+
+# CMD as default entrypoint
+ENTRYPOINT ["cmd.exe"]
 
 # RUN powershell -NoExit -Command "Add-WindowsFeature OpenSSH-Client; Enable-WindowsOptionalFeature -FeatureName OpenSSH-Server"
 
@@ -43,14 +57,9 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 # # Start the service
 # RUN powershell -NoExit -Command "Start-Service sshd"
 
-# # Expose port 22
-# EXPOSE 22
 
 # # Set working directory (optional)
 # # WORKDIR C:\Users\Administrator
-
-# # CMD as default entrypoint
-# ENTRYPOINT ["cmd.exe"]
 
 # # (Optional) Set a custom username and password (replace with desired values)
 # RUN pwsh -NoExit -Command "New-LocalUser -Name username_123 -Password (ConvertTo-SecureString -AsPlainText password123_456 -Force)"
