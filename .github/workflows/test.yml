@@ -23,9 +23,10 @@ jobs:
         paramiko
         docker
         dockerfile-generator
-    - name: "Build Dockerfile from command line, and cache the image"
+    - name: "Cache the Docker image"
       uses: ScribeMD/docker-cache@0.3.7
       with:
         key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
+    - name: "Build the Windows Dockerfile from the command line" 
       run: docker build -t test_pyclisson_ssh_windows .
     # - run: python test_windows_dockerfile.py
