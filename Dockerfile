@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows:2022-ltsc-amd64
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
 RUN powershell -NoExit -Command "Add-WindowsFeature OpenSSH-Client; Enable-WindowsOptionalFeature -FeatureName OpenSSH-Server"
 
 # Install additional tools (optional)
