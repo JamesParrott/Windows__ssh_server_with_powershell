@@ -1,5 +1,26 @@
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
-RUN powershell -NoExit -Command "Add-WindowsFeature OpenSSH-Client; Enable-WindowsOptionalFeature -FeatureName OpenSSH-Server"
+
+SHELL ["powershell", "-Command"]
+
+RUN Add-WindowsCapability -Online -Name OpenSSH.Client
+
+RUN Add-WindowsCapability -Online -Name OpenSSH.Server
+
+# Start the sshd service
+RUN Start-Service sshd
+
+# OPTIONAL but recommended:
+RUN Set-Service -Name sshd -StartupType 'Automatic'
+
+# # Confirm the Firewall rule is configured. It should be created automatically by setup. Run the following to verify
+# if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
+#     Write-Output "Firewall Rule 'OpenSSH-Server-In-TCP' does not exist, creating it..."
+#     New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+# } else {
+#     Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
+# }
+
+# RUN powershell -NoExit -Command "Add-WindowsFeature OpenSSH-Client; Enable-WindowsOptionalFeature -FeatureName OpenSSH-Server"
 
 # Install additional tools (optional)
 # RUN powershell -NoExit -Command "Install-WindowsPackage xpsviewer"
