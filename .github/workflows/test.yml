@@ -7,12 +7,18 @@ on:
 jobs:
 
 
-  build:
-    name: "Build windows containerised ssh server"
+  build_and_test:
+    name: "Build and test ssh-server in Windows Dockeer container, using Python script."
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Docker 
-        run: docker build -t test_windows_ssh_server . 
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+    - run: >
+        pip install
+        paramiko
+        docker
+        dockerfile-generator
+    - run: python test_windows_dockerfile.py
