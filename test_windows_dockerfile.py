@@ -14,7 +14,7 @@ def make_paramiko_repr(distro: str, shell: str):
 
     con = paramiko.SSHClient()
     con.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    con.connect('localhost', username=shell, password=shell)
+    con.connect('localhost', username=shell, password='password_123')
     con.invoke_shell()
 
     def _repr_paramiko(c: str) -> str:
