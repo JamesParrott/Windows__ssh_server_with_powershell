@@ -15,7 +15,7 @@ RUN Add-WindowsCapability -Online -Name OpenSSH.Server
 #     Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
 # }
 
-RUN New-LocalUser -Name cmd -Password (ConvertTo-SecureString -AsPlainText cmd -Force)
+RUN New-LocalUser -Name cmd -Password (ConvertTo-SecureString -AsPlainText password_123 -Force)
 
 # RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name Shell -Value 'PowerShell.exe -NoExit'
 
