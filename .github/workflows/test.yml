@@ -1,1 +1,18 @@
 
+name: test_windows_dockerfile
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+
+  build:
+    name: "Build windows containerised ssh server"
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker 
+        run: docker build -t test_windows_ssh_server . 
