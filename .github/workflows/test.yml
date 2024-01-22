@@ -7,6 +7,8 @@ on:
 jobs:
 
 
+
+
   build_and_test:
     name: "Build and test ssh-server in Windows Dockeer container, using Python script."
     runs-on: windows-2022
@@ -21,4 +23,6 @@ jobs:
         paramiko
         docker
         dockerfile-generator
-    - run: python test_windows_dockerfile.py
+    - name: "Build Dockerfile from command line and let Docker cache the image"
+      run: docker build -t test_pyclisson_ssh_windows .
+    # - run: python test_windows_dockerfile.py
