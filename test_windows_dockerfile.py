@@ -65,6 +65,7 @@ def running_docker_container(client, distro: str, path: pathlib.Path = None):
         print(f'Stopping container {tag}')
         container.stop()
 
+client = docker.from_env()
 
 distro, shell = 'windows', 'cmd'
 
