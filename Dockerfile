@@ -32,7 +32,7 @@ EXPOSE 22
 ENTRYPOINT ["cmd.exe"]
 
 # (Optional) Set a custom username and password (replace with desired values)
-# RUN pwsh -NoExit -Command "New-LocalUser -Name user -Password (ConvertTo-SecureString -AsPlainText password -Force)"
+RUN pwsh -NoExit -Command "New-LocalUser -Name username_123 -Password (ConvertTo-SecureString -AsPlainText password123_456 -Force)"
 
 # Add additional users (optional)
 # RUN pwsh -NoExit -Command "Add-LocalUser -Name additionaluser -Password (ConvertTo-SecureString -AsPlainText password -Force)"
