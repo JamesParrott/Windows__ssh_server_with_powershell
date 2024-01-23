@@ -1,6 +1,7 @@
 import contextlib
 import pathlib
 
+import json
 import docker
 import paramiko
 
@@ -71,4 +72,6 @@ distro, shell = 'windows', 'cmd'
 
 with running_docker_container(client, distro):
     with make_paramiko_repr(distro, shell) as paramiko_repr:
-        paramiko_repr('"Hello world"')
+        output = paramiko_repr('"Hello world"')
+        with open('test.json', 'wt') as f:
+            json.dump(f, {"paramiko_repr_output": output})
