@@ -108,21 +108,23 @@ USER ContainerAdministrator
 
 
 # Download and install OpenSSH
-RUN mkdir SSHD_INSTALL_FOLDER
+# RUN mkdir SSHD_INSTALL_FOLDER
 
 SHELL ["pwsh.exe", "-Command"]
 
 RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.5.0.0p1-Beta/OpenSSH-Win64.zip" -OutFile "openssh.zip" -UseBasicParsing
-RUN Expand-Archive -Path "openssh.zip" -DestinationPath SSHD_INSTALL_FOLDER
-RUN Remove-Item "openssh.zip" -Force
+RUN Expand-Archive -Path "openssh.zip" -DestinationPath .
+# RUN Remove-Item "openssh.zip" -Force
 # RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;${PATH}"
 
 
-RUN setx PATH %PATH%;SSHD_INSTALL_FOLDER\OpenSSH-Win64; /M
+# RUN setx PATH %PATH%;SSHD_INSTALL_FOLDER\OpenSSH-Win64; /M
 
 # RUN [System.Environment]::SetEnvironmentVariable('PATH', %PATH%;SSHD_INSTALL_FOLDER\OpenSSH-Win64;, [System.EnvironmentVariableTarget]::Machine)
 
 # Configure OpenSSH
+WORKDIR OpenSSH-Win64
+
 RUN ssh-keygen -A
 RUN Set-Service -Name sshd -StartupType 'Automatic'
 RUN New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
