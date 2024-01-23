@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
 # Set environment variables
 ENV SSHD_VERSION=9.5.0.0p1-Beta
-ENV SSHD_INSTALL_FOLDER="C:\Program Files\OpenSSH"
+ENV SSHD_INSTALL_FOLDER=C:\OpenSSH
 
 SHELL ["powershell.exe", "-Command"]
 
