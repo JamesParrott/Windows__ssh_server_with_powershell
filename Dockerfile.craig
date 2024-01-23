@@ -1,0 +1,100 @@
+# escape=`
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+https://forums.docker.com/t/windows-nanoserver-github-portable-ssh-auth-fatal-could-not-read-from-remote-repository/134888/5
+
+
+# Args used by from statements must be defined here:
+ARG InstallerEnvHost=mcr.microsoft.com
+ARG InstallerEnvRepo=windows/servercore
+ARG InstallerEnvTag=ltsc2022
+ARG NanoEnvHost=mcr.microsoft.com
+ARG NanoEnvRepo=windows/nanoserver
+ARG NanoEnvTag=ltsc2022
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+#                                         STAGE 1 Build Environment
+# --------------------------------------------------------------------------------------------------------------------------------------
+FROM ${InstallerEnvHost}/${InstallerEnvRepo}:$InstallerEnvTag  AS installer-env1
+
+# disable telemetry
+ENV POWERSHELL_TELEMETRY_OPTOUT="1"
+
+ARG PS_VERSION=7.3.2
+ARG PS_PACKAGE_URL=https://github.com/PowerShell/PowerShell/releases/download/v$PS_VERSION/PowerShell-$PS_VERSION-win-x64.zip
+ARG ZIP_VERSION=2201
+ARG ZIP_PACKAGE_URL=https://www.7-zip.org/a/7z$ZIP_VERSION-x64.exe
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; `
+    New-Item -ItemType Directory -Path C:\installer | Out-Null; `
+    Write-Host "Download PowerShell from $env:PS_PACKAGE_URL"; `
+    Invoke-WebRequest -Uri $env:PS_PACKAGE_URL -outfile C:\installer\powershell.zip -verbose; `
+    Expand-Archive C:\installer\powershell.zip -DestinationPath \PowerShell; `
+    Write-Host "Download 7-Zip from $env:ZIP_PACKAGE_URL"; `
+    Invoke-WebRequest -Uri $env:ZIP_PACKAGE_URL -OutFile C:\installer\7z.exe; `
+    Start-Process -FilePath C:\installer\7z.exe -ArgumentList '/S' -NoNewWindow -Wait -Verbose
+
+#Start the NanoServer Build of ePledge
+# --------------------------------------------------------------------------------------------------------------------------------------
+#                                         STAGE 2 Build Environment
+# --------------------------------------------------------------------------------------------------------------------------------------
+FROM ${NanoEnvHost}/${NanoEnvRepo}:$NanoEnvTag  AS installer-env2
+
+COPY --from=installer-env1 ["/PowerShell", "/Program Files/PowerShell"]
+COPY --from=installer-env1 ["/Program Files/7-Zip", "/Program Files/7-Zip"]
+
+#Need to switch user to ContainerAdministrator in order to do a setx
+USER ContainerAdministrator
+RUN setx PATH "%PATH%;%ProgramFiles%\PowerShell;%ProgramFiles%\Git\cmd;%ProgramFiles%\Git\usr\bin;%ProgramFiles%\7-zip" /M
+USER ContainerUser
+
+ARG GIT_VERSION=2.39.2
+ARG GIT_PACKAGE_URL=https://github.com/git-for-windows/git/releases/download/v$GIT_VERSION.windows.1/PortableGit-$GIT_VERSION-64-bit.7z.exe
+ARG GH_CLI_VERSION=2.23.0
+ARG GH_CLI_PACKAGE_URL=https://github.com/cli/cli/releases/download/v$GH_CLI_VERSION/gh_${GH_CLI_VERSION}_windows_amd64.zip
+
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; `
+    New-Item -ItemType Directory -Path C:\installer | Out-Null; `
+    Write-Host "Download Git from $env:GIT_PACKAGE_URL"; `
+    Invoke-WebRequest -Uri $env:GIT_PACKAGE_URL -OutFile C:\Installer\Git.7z.exe; `
+    7z x C:\Installer\Git.7z.exe -ogit; `
+    Write-Host "Download Git CLI from $env:GH_CLI_PACKAGE_URL"; `
+    Invoke-WebRequest -Uri $env:GH_CLI_PACKAGE_URL -OutFile C:\Installer\GHCLI.zip; `
+    7z x C:\Installer\GHCLI.zip -ogit
+    
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+#                                         Final Build STAGE
+# --------------------------------------------------------------------------------------------------------------------------------------
+FROM ${NanoEnvHost}/${NanoEnvRepo}:$NanoEnvTag  AS nanoserver-epledge
+
+COPY --from=installer-env1 ["/PowerShell", "/Program Files/PowerShell"]
+COPY --from=installer-env1 ["/Program Files/7-Zip", "/Program Files/7-Zip"]
+COPY --from=installer-env2 ["/Git", "/Program Files/Git"]
+
+USER ContainerAdministrator
+#RUN setx PATH "%PATH%;%ProgramFiles%\PowerShell;;%ProgramFiles%\Git;%ProgramFiles%\Git\cmd;%ProgramFiles%\Git\usr\bin;%ProgramFiles%\7-zip" /M
+RUN setx PATH "%PATH%;%ProgramFiles%\PowerShell;;%ProgramFiles%\Git;%ProgramFiles%\Git\cmd;C:\AdminScripts\OpenSSH;%ProgramFiles%\7-zip" /M
+USER ContainerUser
+
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+#Create Base Level Directories
+RUN New-Item -ItemType Directory -Path C:\AdminScripts | Out-Null; `
+    New-Item -ItemType Directory -Path C:\AdminScripts\epledge-deploy | Out-Null; `
+    New-Item -ItemType Directory -Path C:\Users\ContainerUser\.ssh | Out-Null; `
+    Set-Location $ENV:ProgramFiles\Git
+
+# Copy Over Files & Folders
+COPY .ssh C:/Users/ContainerUser/.ssh
+#https://github.com/PowerShell/Win32-OpenSSH/releases
+#download and place into folder to be copied over.
+COPY OpenSSH C:/AdminScripts/OpenSSH
+
+RUN git config --global core.sshcommand 'C:/AdminScripts/OpenSSH/ssh.exe'
+
+RUN $result = (git clone --recursive --depth 1 --no-tags --single-branch --config advice.detachedHead=false --config core.bare=true git@github.com-repo1:<company>/<repo1>.git C:\AdminScripts\repo1);$error.clear();return 0
