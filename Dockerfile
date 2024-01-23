@@ -14,7 +14,7 @@ RUN mkdir ${SSHD_INSTALL_FOLDER}
 
 SHELL ["powershell.exe", "-Command"]
 
-RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v${SSHD_VERSION}/OpenSSH-Win64.zip" -OutFile "openssh.zip" -UseBasicParsing
+RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.5.0.0p1-Beta/OpenSSH-Win64.zip" -OutFile "openssh.zip" -UseBasicParsing
 RUN Expand-Archive -Path "openssh.zip" -DestinationPath $env:SSHD_INSTALL_FOLDER
 RUN Remove-Item "openssh.zip" -Force
 RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;$env:PATH"
