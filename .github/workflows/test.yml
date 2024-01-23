@@ -23,10 +23,17 @@ jobs:
         paramiko
         docker
         dockerfile-generator
+        
     - name: "Cache the Docker image"
       uses: ScribeMD/docker-cache@0.3.7
       with:
         key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
+        
     - name: "Build the Windows Dockerfile from the command line" 
       run: docker build -t test_pyclisson_ssh_windows .
-    # - run: python test_windows_dockerfile.py
+      
+    - name: upload special chars files
+      uses: actions/upload-artifact@v3
+      with:
+        name: special_chars
+        path: "*.json"
