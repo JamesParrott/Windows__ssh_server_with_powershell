@@ -27,7 +27,7 @@ jobs:
     - name: "Cache the Docker image"
       uses: ScribeMD/docker-cache@0.3.7
       with:
-        key: docker-${{ runner.os }}-nano-${{ hashFiles('./Dockerfile') }}
+        key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
         
     - name: "Build the Windows Dockerfile from the command line" 
       run: docker build -t test_pyclisson_ssh_windows .
