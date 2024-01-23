@@ -4,11 +4,12 @@
 FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
 # Set environment variables
-ENV SSHD_VERSION="9.5.0.0p1-Beta"
-ENV SSHD_INSTALL_FOLDER="/c/OpenSSH"
+ENV SSHD_VERSION=9.5.0.0p1-Beta
+ENV SSHD_INSTALL_FOLDER=C:\OpenSSH
 
 # Download and install OpenSSH
-RUN mkdir $env:SSHD_INSTALL_FOLDER
+WORKDIR $env:SSHD_INSTALL_FOLDER
+
 RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v${env:SSHD_VERSION}/OpenSSH-Win64.zip" -OutFile "openssh.zip" -UseBasicParsing
 RUN Expand-Archive -Path "openssh.zip" -DestinationPath $env:SSHD_INSTALL_FOLDER
 RUN Remove-Item "openssh.zip" -Force
