@@ -125,8 +125,9 @@ RUN Expand-Archive -Path "openssh.zip" -DestinationPath .
 # Configure OpenSSH
 WORKDIR OpenSSH-Win64
 
+RUN mkdir %PROGRAMDATA%\ssh
 RUN .\ssh-keygen.exe -A
-RUN Set-Service -Name sshd -StartupType 'Automatic'
+# RUN Set-Service -Name sshd -StartupType 'Automatic'
 RUN New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
 # Expose the SSH port
