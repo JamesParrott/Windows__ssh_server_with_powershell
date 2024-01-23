@@ -1,3 +1,5 @@
+# escape=`
+
 # Use the official nanoserver:lts-ltsc2022 base image
 FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
