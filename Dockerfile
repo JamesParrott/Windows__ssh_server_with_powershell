@@ -113,11 +113,14 @@ RUN mkdir ${SSHD_INSTALL_FOLDER}
 SHELL ["pwsh.exe", "-Command"]
 
 RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.5.0.0p1-Beta/OpenSSH-Win64.zip" -OutFile "openssh.zip" -UseBasicParsing
-RUN Expand-Archive -Path "openssh.zip" -DestinationPath $env:SSHD_INSTALL_FOLDER
+RUN Expand-Archive -Path "openssh.zip" -DestinationPath ${SSHD_INSTALL_FOLDER}\
 RUN Remove-Item "openssh.zip" -Force
-RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;$env:PATH"
+# RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;${PATH}"
 
-RUN [System.Environment]::SetEnvironmentVariable('PATH', $env:PATH, [System.EnvironmentVariableTarget]::Machine)
+
+RUN setx PATH "%PATH%;${SSHD_INSTALL_FOLDER}\bin;" /M
+
+# RUN [System.Environment]::SetEnvironmentVariable('PATH', $env:PATH, [System.EnvironmentVariableTarget]::Machine)
 
 # Configure OpenSSH
 RUN ssh-keygen -A
