@@ -104,6 +104,7 @@ FROM mcr.microsoft.com/powershell:lts-7.2-nanoserver-ltsc2022
 ENV SSHD_VERSION=9.5.0.0p1-Beta
 ENV SSHD_INSTALL_FOLDER=C:\OpenSSH
 
+USER ContainerAdministrator
 
 
 # Download and install OpenSSH
@@ -115,6 +116,7 @@ RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases
 RUN Expand-Archive -Path "openssh.zip" -DestinationPath $env:SSHD_INSTALL_FOLDER
 RUN Remove-Item "openssh.zip" -Force
 RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;$env:PATH"
+
 RUN [System.Environment]::SetEnvironmentVariable('PATH', $env:PATH, [System.EnvironmentVariableTarget]::Machine)
 
 # Configure OpenSSH
