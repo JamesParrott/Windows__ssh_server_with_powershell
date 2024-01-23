@@ -118,9 +118,9 @@ RUN Remove-Item "openssh.zip" -Force
 # RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;${PATH}"
 
 
-RUN setx PATH %PATH%;SSHD_INSTALL_FOLDER\bin; /M
+# RUN setx PATH %PATH%;SSHD_INSTALL_FOLDER\bin; /M
 
-# RUN [System.Environment]::SetEnvironmentVariable('PATH', $env:PATH, [System.EnvironmentVariableTarget]::Machine)
+RUN [System.Environment]::SetEnvironmentVariable('PATH', '%PATH%;SSHD_INSTALL_FOLDER\bin;', [System.EnvironmentVariableTarget]::Machine)
 
 # Configure OpenSSH
 RUN ssh-keygen -A
