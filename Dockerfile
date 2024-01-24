@@ -190,6 +190,8 @@ SHELL ["pwsh.exe", "-Command"]
 
 USER ContainerAdministrator
 
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 RUN Install-PackageProvider NuGet -forcebootstrap -force
 RUN Register-PackageSource -name chocolatey -provider nuget -location http://chocolatey.org/api/v2/ -trusted
 RUN Install-Package openssh -provider NuGet
