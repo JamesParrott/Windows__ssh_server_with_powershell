@@ -113,23 +113,47 @@ USER ContainerAdministrator
 SHELL ["pwsh.exe", "-Command"]
 
 RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.5.0.0p1-Beta/OpenSSH-Win64.zip" -OutFile "openssh.zip" -UseBasicParsing
-RUN Expand-Archive -Path "openssh.zip" -DestinationPath .
-# RUN Remove-Item "openssh.zip" -Force
-# RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;${PATH}"
+# RUN Expand-Archive -Path "openssh.zip" -DestinationPath .
+# # RUN Remove-Item "openssh.zip" -Force
+# # RUN $env:PATH = "${SSHD_INSTALL_FOLDER}\bin;${PATH}"
 
 
-# RUN setx PATH %PATH%;SSHD_INSTALL_FOLDER\OpenSSH-Win64; /M
+# # RUN setx PATH %PATH%;SSHD_INSTALL_FOLDER\OpenSSH-Win64; /M
 
-# RUN [System.Environment]::SetEnvironmentVariable('PATH', %PATH%;SSHD_INSTALL_FOLDER\OpenSSH-Win64;, [System.EnvironmentVariableTarget]::Machine)
+# # RUN [System.Environment]::SetEnvironmentVariable('PATH', %PATH%;SSHD_INSTALL_FOLDER\OpenSSH-Win64;, [System.EnvironmentVariableTarget]::Machine)
 
-# Configure OpenSSH
-WORKDIR OpenSSH-Win64
+# # Configure OpenSSH
+# WORKDIR OpenSSH-Win64
 
-RUN cmd /C mkdir %PROGRAMDATA%\ssh
-# RUN mkdir __PROGRAMDATA__\ssh
-RUN .\ssh-keygen.exe -A
-# RUN Set-Service -Name sshd -StartupType 'Automatic'
-RUN New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+# RUN cmd /C mkdir %PROGRAMDATA%\ssh
+# # RUN mkdir __PROGRAMDATA__\ssh
+# RUN .\ssh-keygen.exe -A
+# # RUN Set-Service -Name sshd -StartupType 'Automatic'
+# RUN New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+
+##################################################################################################################################################
+# https://www.saotn.org/install-openssh-in-windows-server/
+RUN Unblock-File "openssh.zip"
+RUN Expand-Archive "openssh.zip" -DestinationPath .
+RUN Copy-Item -Recurse .\OpenSSH-Win64\ 'C:\'
+RUN &icacls C:\OpenSSH-Win64\libcrypto.dll /grant Everyone:RX
+RUN install-sshd.ps1 to create the OpenSSH Authentication Agent and OpenSSH SSH Server services. It also sets some permissions and registers an Event Tracing (ETW) provider.
+RUN &sc.exe config sshd start= auto, &sc.exe config ssh-agent start= auto
+RUN &sc.exe start sshd, &sc.exe start ssh-agent
+#    Make sure your Windows Defender Firewall is open for port 22, rule OpenSSH-Server-In-TCP must be enabled. If this rule is not available, manually create it:
+
+RUN New-NetFirewallRule `
+  -Name sshd `
+  -DisplayName 'OpenSSH SSH Server' `
+  -Enabled True `
+  -Direction Inbound `
+  -Protocol TCP `
+  -Action Allow `
+  -LocalPort 22 `
+  -Program "C:\OpenSSH\sshd.exe"
+
+
+##################################################################################################################################################
 
 # Expose the SSH port
 EXPOSE 22
