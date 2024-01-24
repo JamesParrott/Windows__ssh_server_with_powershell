@@ -135,9 +135,10 @@ RUN Invoke-WebRequest -Uri "https://github.com/PowerShell/Win32-OpenSSH/releases
 # https://www.saotn.org/install-openssh-in-windows-server/
 RUN Unblock-File "openssh.zip"
 RUN Expand-Archive "openssh.zip" -DestinationPath .
-RUN Copy-Item -Recurse .\OpenSSH-Win64\ 'C:\'
+# RUN Copy-Item -Recurse .\OpenSSH-Win64\ 'C:\'
 RUN &icacls C:\OpenSSH-Win64\libcrypto.dll /grant Everyone:RX
-RUN install-sshd.ps1 to create the OpenSSH Authentication Agent and OpenSSH SSH Server services. It also sets some permissions and registers an Event Tracing (ETW) provider.
+RUN install-sshd.ps1 
+# to create the OpenSSH Authentication Agent and OpenSSH SSH Server services. It also sets some permissions and registers an Event Tracing (ETW) provider.
 RUN &sc.exe config sshd start= auto, &sc.exe config ssh-agent start= auto
 RUN &sc.exe start sshd, &sc.exe start ssh-agent
 #    Make sure your Windows Defender Firewall is open for port 22, rule OpenSSH-Server-In-TCP must be enabled. If this rule is not available, manually create it:
