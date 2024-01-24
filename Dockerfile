@@ -145,6 +145,8 @@ RUN &sc.exe config ssh-agent start= auto
 # RUN &sc.exe start ssh-agent
 #    Make sure your Windows Defender Firewall is open for port 22, rule OpenSSH-Server-In-TCP must be enabled. If this rule is not available, manually create it:
 
+RUN Install-Module -Name NetSecurity
+
 RUN New-NetFirewallRule `
   -Name sshd `
   -DisplayName 'OpenSSH SSH Server' `
