@@ -179,7 +179,9 @@
 #FROM microsoft/windowsservercore:latest
 
 # FROM mcr.microsoft.com/powershell:lts-7.2-nanoserver-ltsc2022
-FROM microsoft/nanoserver:latest
+# FROM microsoft/nanoserver:latest
+
+FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
 RUN powershell Install-PackageProvider NuGet -forcebootstrap -force
 RUN powershell Register-PackageSource -name chocolatey -provider nuget -location http://chocolatey.org/api/v2/ -trusted
