@@ -178,7 +178,6 @@
 #Adjust line following comments to select desired edition of Server 2016
 #FROM microsoft/windowsservercore:latest
 
-# FROM mcr.microsoft.com/powershell:lts-7.2-servercore-ltsc2022
 # FROM microsoft/nanoserver:latest
 
 # FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
@@ -250,7 +249,7 @@
 ##################################################################################################################################################
 
 # 
-FROM mcr.microsoft.com/powershell:lts-7.2-servercore-ltsc2022
+FROM mcr.microsoft.com/powershell:lts-7.2-windowsservercore-ltsc2022
 
 SHELL ["pwsh.exe", "-Command"]
 
