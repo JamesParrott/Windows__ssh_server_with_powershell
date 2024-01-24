@@ -185,10 +185,14 @@ FROM mcr.microsoft.com/powershell:lts-7.2-nanoserver-ltsc2022
 
 SHELL ["pwsh.exe", "-Command"]
 
+USER ContainerAdministrator
+
 RUN Install-PackageProvider NuGet -forcebootstrap -force
 RUN Register-PackageSource -name chocolatey -provider nuget -location http://chocolatey.org/api/v2/ -trusted
 RUN Install-Package openssh -provider NuGet
 RUN If (Test-Path "$env:programfiles\PackageManagement\NuGet\Packages") {$NuGetPkgRoot = "$env:programfiles\PackageManagement\NuGet\Packages"} elseIf (Test-Path "$env:programfiles\NuGet\Packages") {$NuGetPkgRoot = "$env:programfiles\NuGet\Packages"} ; cd ("$NuGetPkgRoot\openssh." + "$((dir "$env:ProgramFiles\nuget\packages\openssh*" | %{[version]$_.name.trimstart('openssh.')} | sort | select -last 1) -join '.')\tools") ; . ".\barebonesinstaller.ps1" -SSHServerFeature
+
+# # USER ContainerUser
 
 EXPOSE 22/tcp
 
