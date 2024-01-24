@@ -171,7 +171,7 @@
 
 
 ##################################################################################################################################################
-
+# https://gitlab.com/DarwinJS/ChocoPackages/-/blob/master/openssh/Dockerfile
 
 #Docker file for installing SSH
 
@@ -183,10 +183,12 @@
 
 FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
-RUN powershell Install-PackageProvider NuGet -forcebootstrap -force
-RUN powershell Register-PackageSource -name chocolatey -provider nuget -location http://chocolatey.org/api/v2/ -trusted
-RUN powershell Install-Package openssh -provider NuGet
-RUN powershell If (Test-Path "$env:programfiles\PackageManagement\NuGet\Packages") {$NuGetPkgRoot = "$env:programfiles\PackageManagement\NuGet\Packages"} elseIf (Test-Path "$env:programfiles\NuGet\Packages") {$NuGetPkgRoot = "$env:programfiles\NuGet\Packages"} ; cd ("$NuGetPkgRoot\openssh." + "$((dir "$env:ProgramFiles\nuget\packages\openssh*" | %{[version]$_.name.trimstart('openssh.')} | sort | select -last 1) -join '.')\tools") ; . ".\barebonesinstaller.ps1" -SSHServerFeature
+SHELL ["pwsh.exe", "-Command"]
+
+RUN Install-PackageProvider NuGet -forcebootstrap -force
+RUN Register-PackageSource -name chocolatey -provider nuget -location http://chocolatey.org/api/v2/ -trusted
+RUN Install-Package openssh -provider NuGet
+RUN If (Test-Path "$env:programfiles\PackageManagement\NuGet\Packages") {$NuGetPkgRoot = "$env:programfiles\PackageManagement\NuGet\Packages"} elseIf (Test-Path "$env:programfiles\NuGet\Packages") {$NuGetPkgRoot = "$env:programfiles\NuGet\Packages"} ; cd ("$NuGetPkgRoot\openssh." + "$((dir "$env:ProgramFiles\nuget\packages\openssh*" | %{[version]$_.name.trimstart('openssh.')} | sort | select -last 1) -join '.')\tools") ; . ".\barebonesinstaller.ps1" -SSHServerFeature
 
 EXPOSE 22/tcp
 
