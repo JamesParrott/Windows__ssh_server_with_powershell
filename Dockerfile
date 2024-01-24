@@ -365,6 +365,6 @@ RUN pwsh `
 # re-enable telemetry
 ENV POWERSHELL_TELEMETRY_OPTOUT="0"
 
-RUN $PSVersionTable
+RUN pwsh $PSVersionTable
 
 CMD ["pwsh.exe"]
