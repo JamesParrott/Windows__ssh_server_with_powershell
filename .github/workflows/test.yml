@@ -32,7 +32,7 @@ jobs:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
         
     - name: "Build the Windows Dockerfile from the command line" 
-      run: docker build -t test_pyclisson_ssh_windows_nano_server .
+      run: docker powershell_windows_nano_server .
 
     # - name: "Run Hello World via paramiko, saving to .json, Python script"
     #   run: python test_windows_dockerfile.py
@@ -42,3 +42,6 @@ jobs:
     #   with:
     #     name: special_chars
     #     path: "*.json"
+
+    - name: docker Manifest
+      run: docker manifest inspect powershell_windows_nano_serverr

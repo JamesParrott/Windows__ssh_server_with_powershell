@@ -1,0 +1,15 @@
+name: test_windows_dockerfile
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+
+
+  build_and_show_powershell_version:
+    name: "Build image from dockerfiles, and pull image from MCR, spin up containers and output powershell version table."
+    runs-on: windows-2022
+    strategy: 
+      matrix:
+        tag: []
