@@ -184,7 +184,7 @@
 # FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
 # FROM mcr.microsoft.com/windows/servercore:ltsc2022
-FROM mcr.microsoft.com/powershell:lts-7.2-servercore-ltsc2022
+FROM mcr.microsoft.com/powershell:lts-7.2-windowsservercore-ltsc2022
 
 SHELL ["pwsh.exe", "-Command"]
 
