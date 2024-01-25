@@ -70,13 +70,15 @@ client = docker.from_env()
 
 # distro, shell = 'windows', 'cmd'
 
-# with running_docker_container(client, distro):
-#     with make_paramiko_repr(distro, shell) as paramiko_repr:
-#         output = paramiko_repr('"Hello world"')
-#         with open('test.json', 'wt') as f:
-#             json.dump(f, {"paramiko_repr_output": output})
+distro, shell = 'alpine', 'dash'
 
-with make_paramiko_repr('windows', 'ssh', 'Passw0rd') as paramiko_repr:
-    output = paramiko_repr('"Hello world"')
-    with open('test.json', 'wt') as f:
-        json.dump(f, {"paramiko_repr_output": output})
+with running_docker_container(client, distro):
+    with make_paramiko_repr(distro, shell, shell) as paramiko_repr:
+        output = paramiko_repr('"Hello world"')
+        with open('test.json', 'wt') as f:
+            json.dump(f, {"paramiko_repr_output": output})
+
+# with make_paramiko_repr('windows', 'ssh', 'Passw0rd') as paramiko_repr:
+#     output = paramiko_repr('"Hello world"')
+#     with open('test.json', 'wt') as f:
+#         json.dump(f, {"paramiko_repr_output": output})
