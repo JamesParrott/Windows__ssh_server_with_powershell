@@ -10,7 +10,8 @@ RUN apk add --no-cache \
     python3 \
     bash \
     dash \
-    fish \
+    fish 
+    # \
     # zsh \
     # ion-shell \
     # tcsh \
