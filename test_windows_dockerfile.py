@@ -11,11 +11,11 @@ HOST_WORKING_DIR = pathlib.Path(__file__).parent
 
 
 @contextlib.contextmanager
-def make_paramiko_repr(distro: str, shell: str):
+def make_paramiko_repr(distro: str, username: str, password: str = 'password_123'):
 
     con = paramiko.SSHClient()
     con.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    con.connect('localhost', username=shell, password='password_123')
+    con.connect('localhost', username=username, password=password)
     con.invoke_shell()
 
     def _repr_paramiko(c: str) -> str:
@@ -68,10 +68,15 @@ def running_docker_container(client, distro: str, path: pathlib.Path = None):
 
 client = docker.from_env()
 
-distro, shell = 'windows', 'cmd'
+# distro, shell = 'windows', 'cmd'
 
-with running_docker_container(client, distro):
-    with make_paramiko_repr(distro, shell) as paramiko_repr:
-        output = paramiko_repr('"Hello world"')
-        with open('test.json', 'wt') as f:
-            json.dump(f, {"paramiko_repr_output": output})
+# with running_docker_container(client, distro):
+#     with make_paramiko_repr(distro, shell) as paramiko_repr:
+#         output = paramiko_repr('"Hello world"')
+#         with open('test.json', 'wt') as f:
+#             json.dump(f, {"paramiko_repr_output": output})
+
+with make_paramiko_repr('windows', 'ssh', 'Passw0rd') as paramiko_repr:
+    output = paramiko_repr('"Hello world"')
+    with open('test.json', 'wt') as f:
+        json.dump(f, {"paramiko_repr_output": output})
