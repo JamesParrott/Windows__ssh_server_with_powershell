@@ -1,7 +1,8 @@
 ARG base_image=alpine
 ARG base_tag=edge
 
-FROM "${base_image}:${base_tag}" as runner
+FROM "${base_image}"
+# ":${base_tag}" as runner
 
 ENV LANG=C.UTF8
 
