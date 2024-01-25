@@ -42,6 +42,3 @@ jobs:
     #   with:
     #     name: special_chars
     #     path: "*.json"
-
-    - name: docker Manifest
-      run: docker manifest inspect powershell_windows_nano_serverr
