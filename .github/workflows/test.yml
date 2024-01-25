@@ -17,14 +17,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.10' 
-    - run: >
-        pip install
-        paramiko
-        docker
-        dockerfile-generator
+    # - uses: actions/setup-python@v5
+    #   with:
+    #     python-version: '3.10' 
+    # - run: >
+    #     pip install
+    #     paramiko
+    #     docker
+    #     dockerfile-generator
         
     # - name: "Cache the Docker image"
     #   uses: ScribeMD/docker-cache@0.3.7
@@ -34,14 +34,22 @@ jobs:
     - name: "Build the Windows Dockerfile" 
       run: docker build -t powershell_windows_nano_server .
 
-    - name: "Run the Windows Docker image" 
-      run: docker run --rm -d -p 22:22 powershell_windows_nano_server
+    # - name: "Run the Windows Docker image" 
+    #   run: docker run --rm -d -p 22:22 powershell_windows_nano_server
+
+    # - name: "Install Putty"
+    #   shell: cmd
+    #   run: choco install putty
+
+
+    # - name: "Ssh to server"
+    #   run: putty -ssh -l ssh -pw Passw0rd localhost
 
     - name: "Run Hello World via paramiko, saving to .json, Python script"
       run: python test_windows_dockerfile.py
       
-    - name: upload special chars files
-      uses: actions/upload-artifact@v3
-      with:
-        name: special_chars
-        path: test.json
+    # - name: upload special chars files
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: special_chars
+    #     path: test.json

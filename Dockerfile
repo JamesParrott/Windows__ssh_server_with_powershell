@@ -1,86 +1,51 @@
-ARG base_image=alpine
-ARG base_tag=edge
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
-FROM "${base_image}"
-# ":${base_tag}" as runner
+# Install Powershell
+ADD https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.zip c:/powershell.zip
+RUN powershell.exe -Command Expand-Archive c:/powershell.zip c:/PS7 ; Remove-Item c:/powershell.zip
+RUN C:/PS7/pwsh.EXE -Command C:/PS7/Install-PowerShellRemoting.ps1
 
-ENV LANG=C.UTF8
+# Install SSH	
+ADD https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.2.2.0p1-Beta/OpenSSH-Win64.zip c:/openssh.zip
+RUN c:/PS7/pwsh.exe -Command Expand-Archive c:/openssh.zip c:/ ; Remove-Item c:/openssh.zip
+RUN c:/PS7/pwsh.exe -Command c:/OpenSSH-Win64/Install-SSHd.ps1
 
-RUN apk add --no-cache \
-    openssh \
-    python3 \
-    bash \
-    dash \
-    fish 
-    # \
-    # zsh \
-    # ion-shell \
-    # tcsh \
-    # oksh \
-    # loksh \
-    # yash
+# Configure SSH
+COPY sshd_config c:/OpenSSH-Win64/sshd_config
+COPY sshd_banner c:/OpenSSH-Win64/sshd_banner
+WORKDIR c:/OpenSSH-Win64/
+# Don't use powershell as -f paramtere causes problems.
+RUN c:/OpenSSH-Win64/ssh-keygen.exe -t dsa -N "" -f ssh_host_dsa_key && \
+    c:/OpenSSH-Win64/ssh-keygen.exe -t rsa -N "" -f ssh_host_rsa_key && \
+    c:/OpenSSH-Win64/ssh-keygen.exe -t ecdsa -N "" -f ssh_host_ecdsa_key && \
+    c:/OpenSSH-Win64/ssh-keygen.exe -t ed25519 -N "" -f ssh_host_ed25519_key
 
+# Create a user to login, as containeradministrator password is unknown
+RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
-# RUN apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing/ \
-#     elvish \
-#     xonsh \
-#     mrsh \
-#     imrsh \
-#     nsh \
-#     nushell
+# Set PS7 as default shell
+RUN C:/PS7/pwsh.EXE -Command \
+    New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; \
+    New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps7\pwsh.exe -PropertyType string -Force ; 
 
+RUN C:/PS7/pwsh.EXE -Command \
+    ./Install-sshd.ps1; \
+    ./FixHostFilePermissions.ps1 -Confirm:$false;
 
+RUN C:/PS7/pwsh.EXE -Command \
+    Install-Module -Name NetSecurity
 
-
-
-# Do not hardcode important passwords into Dockerfiles (and do not
-# set trivially guessable passwords), as I have done below!   
-#
-# Use secrets, or at least environment variables.
-#  
-# This Dockerfile is intended to define a local testing server, 
-# remote connections to which are prevented by other means.
-#
-RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && \
-    adduser -h /home/sh -s /bin/sh -D sh && \
-    echo -n 'sh:sh' | chpasswd && \
-    adduser -h /home/ash -s /bin/ash -D ash && \
-    echo -n 'ash:ash' | chpasswd && \
-    adduser -h /home/bash -s /bin/bash  -D bash && \
-    echo -n 'bash:bash' | chpasswd && \
-    adduser -h /home/dash -s /usr/bin/dash -D dash && \
-    echo -n 'dash:dash' | chpasswd && \
-    adduser -h /home/fish -s /usr/bin/fish -D fish && \
-    echo -n 'fish:fish' | chpasswd 
-    # && \
-    # adduser -h /home/zsh -s /bin/zsh -D zsh && \
-    # echo -n 'zsh:zsh' | chpasswd && \
-    # adduser -h /home/ion-shell -s /usr/bin/ion -D ion-shell && \
-    # echo -n 'ion-shell:ion-shell' | chpasswd && \
-    # adduser -h /home/tcsh -s /bin/tcsh -D tcsh && \
-    # echo -n 'tcsh:tcsh' | chpasswd && \
-    # adduser -h /home/oksh -s /bin/oksh -D oksh && \
-    # echo -n 'oksh:oksh' | chpasswd && \
-    # adduser -h /home/loksh -s /bin/ksh -D loksh && \
-    # echo -n 'loksh:loksh' | chpasswd && \
-    # adduser -h /home/yash -s /usr/bin/yash -D yash && \
-    # echo -n 'yash:yash' | chpasswd && \
-    # adduser -h /home/elvish -s /usr/bin/elvish -D elvish && \
-    # echo -n 'elvish:elvish' | chpasswd && \
-    # adduser -h /home/xonsh -s /usr/bin/xonsh -D xonsh && \
-    # echo -n 'xonsh:xonsh' | chpasswd && \
-    # adduser -h /home/mrsh -s /usr/bin/mrsh -D mrsh && \
-    # echo -n 'mrsh:mrsh' | chpasswd && \
-    # adduser -h /home/imrsh -s /usr/bin/imrsh -D imrsh && \
-    # echo -n 'imrsh:imrsh' | chpasswd && \
-    # adduser -h /home/nsh -s /usr/bin/nsh -D nsh && \
-    # echo -n 'nsh:nsh' | chpasswd && \
-    # adduser -h /home/nushell -s /usr/bin/nu -D nushell && \
-    # echo -n 'nushell:nushell' | chpasswd
-
-RUN ssh-keygen -A
-
-# Start SSH daemon to listen for log ins.
-CMD ["/usr/sbin/sshd", "-D", "-e"]
+RUN C:/PS7/pwsh.EXE -Command \
+  New-NetFirewallRule \
+  -Name sshd \
+  -DisplayName 'OpenSSH SSH Server' \
+  -Enabled True \
+  -Direction Inbound \
+  -Protocol TCP \
+  -Action Allow \
+  -LocalPort 22 \
+  -Program "C:\OpenSSH\sshd.exe"
 
 EXPOSE 22
+# For some reason SSH stops after build. So start it again when container runs.
+CMD [ "c:/ps7/pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd" ]
