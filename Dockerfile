@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
+USER ContainerAdministrator
+
 # Install Powershell
 ADD https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.zip c:/powershell.zip
 RUN powershell.exe -Command Expand-Archive c:/powershell.zip c:/PS7 ; Remove-Item c:/powershell.zip
@@ -34,6 +36,7 @@ RUN C:/PS7/pwsh.EXE -Command \
 
 RUN C:/PS7/pwsh.EXE -Command \
     Install-Module -Name NetSecurity
+
 
 RUN C:/PS7/pwsh.EXE -Command \
   New-NetFirewallRule \
