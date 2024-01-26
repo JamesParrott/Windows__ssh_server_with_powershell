@@ -34,20 +34,20 @@ RUN C:/PS7/pwsh.EXE -Command \
     ./Install-sshd.ps1; \
     ./FixHostFilePermissions.ps1 -Confirm:$false;
 
-RUN C:/PS7/pwsh.EXE -Command \
-    Install-Module -Name NetSecurity
+# RUN C:/PS7/pwsh.EXE -Command \
+#     Install-Module -Name NetSecurity
 
 
-RUN C:/PS7/pwsh.EXE -Command \
-  New-NetFirewallRule \
-  -Name sshd \
-  -DisplayName 'OpenSSH SSH Server' \
-  -Enabled True \
-  -Direction Inbound \
-  -Protocol TCP \
-  -Action Allow \
-  -LocalPort 22 \
-  -Program "C:\OpenSSH\sshd.exe"
+# RUN C:/PS7/pwsh.EXE -Command \
+#   New-NetFirewallRule \
+#   -Name sshd \
+#   -DisplayName 'OpenSSH SSH Server' \
+#   -Enabled True \
+#   -Direction Inbound \
+#   -Protocol TCP \
+#   -Action Allow \
+#   -LocalPort 22 \
+#   -Program "C:\OpenSSH\sshd.exe"
 
 EXPOSE 22
 # For some reason SSH stops after build. So start it again when container runs.
