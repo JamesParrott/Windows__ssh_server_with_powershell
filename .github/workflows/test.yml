@@ -17,14 +17,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    # - uses: actions/setup-python@v5
-    #   with:
-    #     python-version: '3.10' 
-    # - run: >
-    #     pip install
-    #     paramiko
-    #     docker
-    #     dockerfile-generator
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+    - run: >
+        pip install
+        paramiko
+        docker
+        dockerfile-generator
         
     # - name: "Cache the Docker image"
     #   uses: ScribeMD/docker-cache@0.3.7
