@@ -64,7 +64,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 USER ContainerAdministrator
 
-SHELL ["pwsh.exe", "-Command"]
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 RUN $PSVersionTable
 
