@@ -101,7 +101,8 @@ distro, shell = 'windows', 'powershell'
 
 
 with running_docker_container(client, distro) as cont:
-    ip_address = client.api.inspect_container(cont.id)['NetworkSettings']['Networks']['bridge']['IPAddress']
+    print(list(client.api.inspect_container(cont.id)['NetworkSettings']['Networks']))
+    ip_address = client.api.inspect_container(cont.id)['NetworkSettings']['Networks']['nat']['IPAddress']
     print(f'{ip_address=}')
     with make_paramiko_repr(distro, 'ssh', 'Passw0rd', ip_address) as paramiko_repr:
         output = paramiko_repr('"Hello world"')
