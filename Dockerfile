@@ -55,6 +55,6 @@
 
 FROM python:windowsservercore-ltsc2022
 
-RUN python -m http.server
-
 EXPOSE 8000
+
+CMD ["python", "-m", "http.server"]
