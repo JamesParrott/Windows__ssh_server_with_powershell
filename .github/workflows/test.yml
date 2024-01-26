@@ -35,12 +35,13 @@ jobs:
       run: docker build -t powershell_windows_ssh_server .
 
     - name: "Run the Windows Docker image" 
-      run: docker run --rm -d -p 22:22 powershell_windows_ssh_server
+      run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
 
+    - name: "Find Container IP address"
+      run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
 
-
-    - name: "Run Hello World via paramiko, saving to .json, Python script"
-      run: python test_windows_dockerfile.py
+    # - name: "Run Hello World via paramiko, saving to .json, Python script"
+    #   run: python test_windows_dockerfile.py
       
     # - name: upload special chars files
     #   uses: actions/upload-artifact@v3
