@@ -49,6 +49,6 @@ RUN C:/PS7/pwsh.EXE -Command \
 #   -LocalPort 22 \
 #   -Program "C:\OpenSSH\sshd.exe"
 
-EXPOSE 2222
+EXPOSE 22
 # For some reason SSH stops after build. So start it again when container runs.
 CMD [ "c:/ps7/pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd" ]
