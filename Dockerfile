@@ -55,6 +55,6 @@
 
 FROM python:windowsservercore-ltsc2022
 
-EXPOSE 8000
+EXPOSE 22
 
-CMD ["python", "-m", "http.server"]
+CMD ["python", "-m", "http.server", "22"]
