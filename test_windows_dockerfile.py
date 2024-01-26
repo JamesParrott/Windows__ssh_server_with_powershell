@@ -15,12 +15,17 @@ PYTHON = {'alpine' : 'python',
          }
 
 @contextlib.contextmanager
-def make_paramiko_repr(distro: str, username: str, password: str = 'password_123'):
+def make_paramiko_repr(
+    distro: str,
+    username: str,
+    password: str = 'password_123',
+    ip_address: str = 'localhost',
+    ):
 
     con = paramiko.SSHClient()
     con.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     # con.connect('localhost', username=username, password=password)
-    con.connect('127.0.0.1', port=2222, username=username, password=password)
+    con.connect(ip_address, port=2222, username=username, password=password)
     con.invoke_shell()
 
     def _repr_paramiko(c: str) -> str:
@@ -66,7 +71,7 @@ def running_docker_container(client, distro: str, path: pathlib.Path = None):
                         # volumes={HOST_WORKING_DIR: {'bind':CONTAINER_DIR, 'mode': 'rw'}},
                         )
     try:
-        yield None
+        yield container
     finally:
         print(f'Stopping container {tag}')
         container.stop()
@@ -95,8 +100,10 @@ client = docker.from_env()
 distro, shell = 'windows', 'powershell'
 
 
-# with running_docker_container(client, distro):
-with make_paramiko_repr(distro, 'ssh', 'Passw0rd') as paramiko_repr:
-    output = paramiko_repr('"Hello world"')
-    with open('test.json', 'wt') as f:
-        json.dump(f, {"paramiko_repr_output": output})
+with running_docker_container(client, distro) as cont:
+    ip_address = client.api.inspect_container(cont.id)['NetworkSettings']['Networks']['bridge']['IPAddress']
+    print(f'{ip_address=}')
+    with make_paramiko_repr(distro, 'ssh', 'Passw0rd', ip_address) as paramiko_repr:
+        output = paramiko_repr('"Hello world"')
+        with open('test.json', 'wt') as f:
+            json.dump(f, {"paramiko_repr_output": output})
