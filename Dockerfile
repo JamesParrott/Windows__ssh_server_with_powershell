@@ -66,6 +66,45 @@ USER ContainerAdministrator
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
+
+
 RUN $PSVersionTable
+# On: mcr.microsoft.com/windows/servercore:ltsc2022
+# SHELL ["powershell", ...]
+#  Name                           Value                                           
+# ----                           -----                                           
+# PSVersion                      5.1.20348.2227                                  
+# PSEdition                      Desktop                                         
+# PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0...}                         
+# BuildVersion                   10.0.20348.2227                                 
+# CLRVersion                     4.0.30319.42000                                 
+# WSManStackVersion              3.0                                             
+# PSRemotingProtocolVersion      2.3                                             
+# SerializationVersion           1.1.0.1     
+
+# https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
 
 RUN Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+# Name  : OpenSSH.Client~~~~0.0.1.0
+# State : Installed
+# Name  : OpenSSH.Server~~~~0.0.1.0
+# State : NotPresent
+
+
+RUN Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+
+EXPOSE 22
+
+# Start the sshd service
+CMD ["powershell", "-Command", "Start-Service", "sshd"]
+
+# # OPTIONAL but recommended:
+# RUN Set-Service -Name sshd -StartupType 'Automatic'
+
+# # Confirm the Firewall rule is configured. It should be created automatically by setup. Run the following to verify
+# RUN if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {\
+#         Write-Output "Firewall Rule 'OpenSSH-Server-In-TCP' does not exist, creating it..."\
+#         New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22\
+#     } else {\
+#         Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."\
+#     }
