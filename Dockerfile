@@ -53,8 +53,19 @@
 # # For some reason SSH stops after build. So start it again when container runs.
 # CMD [ "c:/ps7/pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd" ]
 
-FROM python:windowsservercore-ltsc2022
+# FROM python:windowsservercore-ltsc2022
 
-EXPOSE 22
+# EXPOSE 22
 
-CMD ["python", "-m", "http.server", "22"]
+# CMD ["python", "-m", "http.server", "22"]
+
+
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+USER ContainerAdministrator
+
+SHELL ["pwsh.exe", "-Command"]
+
+RUN $PSVersionTable
+
+RUN Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
