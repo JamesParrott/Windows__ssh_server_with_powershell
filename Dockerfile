@@ -288,7 +288,7 @@ RUN New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; \
 RUN ./Install-sshd.ps1; \
     ./FixHostFilePermissions.ps1 -Confirm:$false;
 
-RUN New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+# RUN New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
 EXPOSE 22
 

@@ -17,25 +17,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    # - uses: actions/setup-python@v5
-    #   with:
-    #     python-version: '3.10' 
-    # - run: >
-    #     pip install
-    #     paramiko
-    #     docker
-    #     dockerfile-generator
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+    - run: >
+        pip install
+        paramiko
+        docker
+        dockerfile-generator
         
     # - name: "Cache the Docker image"
     #   uses: ScribeMD/docker-cache@0.3.7
     #   with:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
         
-    - name: "Build the Windows Dockerfile" 
-      run: docker build -t powershell_windows_ssh_server .
+    # - name: "Build the Windows Dockerfile" 
+    #   run: docker build -t powershell_windows_ssh_server .
 
-    - name: "Run the Windows Docker image" 
-      run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
+    # - name: "Run the Windows Docker image" 
+    #   run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
         
     # - name: "Build the Windows Dockerfile" 
     #   run: docker build -t python_windows_http_server .
@@ -51,8 +51,8 @@ jobs:
 
     # - run: ssh ssh@localhost
 
-    # - name: "Run Hello World via paramiko, saving to .json, Python script"
-    #   run: python test_windows_dockerfile.py
+    - name: "Run Hello World via paramiko, saving to .json, Python script"
+      run: python test_windows_dockerfile.py
       
     # - name: upload special chars files
     #   uses: actions/upload-artifact@v3
