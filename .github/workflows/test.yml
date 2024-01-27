@@ -46,8 +46,8 @@ jobs:
     # - name: "Test the http server"
     #   run: curl localhost:22
 
-    - name: "Find Container IP address"
-      run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
+    # - name: "Find Container IP address"
+    #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
 
     # - run: ssh ssh@localhost
 
