@@ -106,5 +106,6 @@ with running_docker_container(client, distro) as cont:
     print(f'{ip_address=}')
     with make_paramiko_repr(distro, 'ssh', 'Passw0rd', ip_address) as paramiko_repr:
         output = paramiko_repr('"Hello world"')
+        print(f'Paramiko output: {output}')
         with open('test.json', 'wt') as f:
             json.dump(f, {"paramiko_repr_output": output})

@@ -49,7 +49,7 @@ jobs:
     - name: "Find Container IP address"
       run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
 
-    - run: ssh ssh@localhost
+    # - run: ssh ssh@localhost
 
     # - name: "Run Hello World via paramiko, saving to .json, Python script"
     #   run: python test_windows_dockerfile.py
