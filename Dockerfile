@@ -309,11 +309,11 @@ RUN .\Install-sshd.ps1; `
 
 # EXPOSE 22
 
-# For some reason SSH stops after build. So start it again when container runs.
-CMD [ "pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd", "-D", "-e" ]
-
 WORKDIR c:\test_ssh_script
 
 # ENTRYPOINT ["c:\PS7\pwsh.EXE"]
 
 COPY test_windows_dockerfile.py .
+
+# For some reason SSH stops after build. So start it again when container runs.
+CMD [ "pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd", "-D", "-e" ]
