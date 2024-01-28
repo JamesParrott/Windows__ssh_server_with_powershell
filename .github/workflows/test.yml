@@ -32,10 +32,11 @@ jobs:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
         
     - name: "Build the Windows Dockerfile" 
-      run: docker build -t powershell_windows_ssh_server .
+      run: docker build -t mmjytu .
 
     - name: "Run the Windows Docker image" 
-      run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
+      # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
+      run: docker run --rm -d  --name sshserver mmjytu
         
     # - name: "Build the Windows Dockerfile" 
     #   run: docker build -t python_windows_http_server .
@@ -47,12 +48,12 @@ jobs:
     #   run: curl localhost:22
 
     # - name: "Find Container IP address"
-    #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
+    #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" sshserver
 
     # - run: ssh ssh@localhost
 
     - name: "Run Hello World via paramiko, saving to .json, Python script"
-      run: docker exec ssh_server "python test_windows_dockerfile.py"
+      run: docker exec sshserver "python test_windows_dockerfile.py"
       
     # - name: upload special chars files
     #   uses: actions/upload-artifact@v3
