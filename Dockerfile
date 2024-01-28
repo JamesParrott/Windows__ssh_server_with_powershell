@@ -256,7 +256,7 @@ FROM python:windowsservercore-ltsc2022
 
 USER ContainerAdministrator
 
-SHELL ["pwsh.exe", "-Command"]
+# SHELL ["pwsh.exe", "-Command"]
 
 # RUN $PSVersionTable
 
