@@ -2,7 +2,7 @@ import contextlib
 import pathlib
 
 import json
-import docker
+# import docker
 import paramiko
 
 
@@ -76,7 +76,7 @@ def running_docker_container(client, distro: str, path: pathlib.Path = None):
         print(f'Stopping container {tag}')
         container.stop()
 
-client = docker.from_env()
+# client = docker.from_env()
 
 # distro, shell = 'windows', 'cmd'
 
@@ -100,12 +100,19 @@ client = docker.from_env()
 distro, shell = 'windows', 'powershell'
 
 
-with running_docker_container(client, distro) as cont:
-    print(list(client.api.inspect_container(cont.id)['NetworkSettings']['Networks']))
-    ip_address = client.api.inspect_container(cont.id)['NetworkSettings']['Networks']['nat']['IPAddress']
-    print(f'{ip_address=}')
-    with make_paramiko_repr(distro, 'ssh', 'Passw0rd', ip_address) as paramiko_repr:
-        output = paramiko_repr('"Hello world"')
-        print(f'Paramiko output: {output}')
-        with open('test.json', 'wt') as f:
-            json.dump(f, {"paramiko_repr_output": output})
+# with running_docker_container(client, distro) as cont:
+#     print(list(client.api.inspect_container(cont.id)['NetworkSettings']['Networks']))
+#     ip_address = client.api.inspect_container(cont.id)['NetworkSettings']['Networks']['nat']['IPAddress']
+#     print(f'{ip_address=}')
+#     with make_paramiko_repr(distro, 'ssh', 'Passw0rd', ip_address) as paramiko_repr:
+#         output = paramiko_repr('"Hello world"')
+#         print(f'Paramiko output: {output}')
+#         with open('test.json', 'wt') as f:
+#             json.dump(f, {"paramiko_repr_output": output})
+
+
+with make_paramiko_repr(distro, 'ssh', 'Passw0rd', ip_address) as paramiko_repr:
+    output = paramiko_repr('"Hello world"')
+    print(f'Paramiko output: {output}')
+    with open('test.json', 'wt') as f:
+        json.dump(f, {"paramiko_repr_output": output})

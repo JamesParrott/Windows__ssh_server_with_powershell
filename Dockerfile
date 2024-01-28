@@ -249,7 +249,9 @@
 ##################################################################################################################################################
 
 # 
-FROM mcr.microsoft.com/powershell:lts-7.2-windowsservercore-ltsc2022
+# FROM mcr.microsoft.com/powershell:lts-7.2-windowsservercore-ltsc2022
+
+FROM python:windowsservercore-ltsc2022
 
 SHELL ["pwsh.exe", "-Command"]
 
@@ -292,8 +294,13 @@ RUN ./Install-sshd.ps1; \
 
 # RUN New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
-EXPOSE 22
+# EXPOSE 22
 
 # For some reason SSH stops after build. So start it again when container runs.
 CMD [ "pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd", "-D", "-e" ]
 
+WORKDIR c:/test_ssh_script
+
+# ENTRYPOINT ["C:/PS7/pwsh.EXE"]
+
+COPY test_windows_dockerfile.py .
