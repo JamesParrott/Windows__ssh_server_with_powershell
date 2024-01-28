@@ -52,7 +52,7 @@ jobs:
     # - run: ssh ssh@localhost
 
     - name: "Run Hello World via paramiko, saving to .json, Python script"
-      run: docker exec -it python test_windows_dockerfile.py
+      run: docker exec python test_windows_dockerfile.py
       
     # - name: upload special chars files
     #   uses: actions/upload-artifact@v3
