@@ -289,7 +289,7 @@ RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
 # SHELL ["pwsh.exe", "-Command"]
 
-SHELL ["c:\PS7\pwsh.EXE", "-Command"]
+SHELL ["c:\\PS7\\pwsh.EXE", "-Command"]
 
 # Set PS7 as default shell
 # RUN c:\PS7\pwsh.EXE -Command `
@@ -297,8 +297,8 @@ RUN New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; `
     New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps7\pwsh.exe -PropertyType string -Force ; 
 
 # RUN c:\PS7\pwsh.EXE -Command `
-RUN ./Install-sshd.ps1; `
-    ./FixHostFilePermissions.ps1 -Confirm:$false;
+RUN .\Install-sshd.ps1; `
+    .\FixHostFilePermissions.ps1 -Confirm:$false;
 
 # RUN New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
