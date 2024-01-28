@@ -316,4 +316,4 @@ WORKDIR c:\test_ssh_script
 COPY test_windows_dockerfile.py .
 
 # For some reason SSH stops after build. So start it again when container runs.
-CMD [ "pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd", "-D", "-e" ]
+CMD [ "c:\\PS7\\pwsh.EXE", "-NoExit", "-Command", "Start-Service" ,"sshd", "-D", "-e" ]
