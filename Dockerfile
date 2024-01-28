@@ -262,8 +262,13 @@ SHELL ["pwsh.exe", "-Command"]
 
 # Install Powershell v7.3.6
 ADD https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.zip c:\powershell.zip
-RUN powershell.exe -Command Expand-Archive c:\powershell.zip c:\PS7 ; Remove-Item c:\powershell.zip
-RUN c:\PS7\pwsh.EXE -Command c:\PS7\Install-PowerShellRemoting.ps1
+# RUN powershell.exe -Command Expand-Archive c:\powershell.zip c:\PS7 ; Remove-Item c:\powershell.zip
+RUN Expand-Archive c:\powershell.zip c:\PS7 ; Remove-Item c:\powershell.zip
+
+
+SHELL ["c:\\PS7\\pwsh.EXE", "-Command"]
+
+RUN c:\PS7\Install-PowerShellRemoting.ps1
 
 # Install SSH	
 ADD https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.2.2.0p1-Beta/OpenSSH-Win64.zip c:\openssh.zip
