@@ -107,7 +107,7 @@ jobs:
     #   run: docker exec ssh_server python test_windows_dockerfile.py
       
     - name: upload special chars files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: special_chars
         path: test.json
