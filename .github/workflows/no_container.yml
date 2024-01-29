@@ -34,7 +34,8 @@ jobs:
       run: Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 
     - name: "Start the sshd service"
-      run: Start-Service sshd -RunAsAdmin
+      run: Start-Service sshd 
+      # run: Start-Service sshd -RunAsAdmin
 
     # - name: "Test SSH Server"
     #   run: ssh ssh@localhost "echo Hello_World"
@@ -50,7 +51,7 @@ jobs:
     #     } else {
     #       Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
     # }
-    
+
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10' 
