@@ -24,6 +24,12 @@ jobs:
     - name: "Check if OpenSSH already available"
       run: Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 
+    # - name: "Install the OpenSSH Client"
+    #   run: Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+
+    - name: "Install the OpenSSH Server"
+      run: Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+
     # - uses: actions/setup-python@v5
     #   with:
     #     python-version: '3.10' 
