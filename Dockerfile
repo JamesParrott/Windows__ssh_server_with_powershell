@@ -3,6 +3,11 @@
 
 FROM python:windowsservercore-ltsc2022
 
+SHELL ["cmd.exe", "/C"]
+# "Add local user"
+RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # "Check if in admin group"
 RUN (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -10,8 +15,6 @@ RUN (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsI
 # "Check if OpenSSH already available"
 RUN Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 
-# "Add local user"
-RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
 # # "Install the OpenSSH Client"
 # RUN Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
