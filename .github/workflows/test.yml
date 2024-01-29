@@ -61,6 +61,9 @@ jobs:
         docker exec ssh_server pip install
         paramiko
 
+    - name: "Start the SSH server process"
+      run: docker exec -d ssh_server c:\\PS7\\pwsh.EXE -NoExit -Command Start-Service sshd 
+
     - name: "Run Hello World via paramiko, saving to .json, Python script"
       run: docker exec ssh_server python test_windows_dockerfile.py
       
