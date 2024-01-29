@@ -36,7 +36,7 @@ jobs:
 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
-      run: docker run --rm -d --volume ./:./ --name ssh_server powershell_windows_ssh_server
+      run: docker run --rm -d --volume .\:.\ --name ssh_server powershell_windows_ssh_server
         
     # - name: "Build the Windows Dockerfile" 
     #   run: docker build -t python_windows_http_server .
