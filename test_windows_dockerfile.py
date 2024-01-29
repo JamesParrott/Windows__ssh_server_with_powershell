@@ -36,7 +36,7 @@ def make_paramiko_repr(
 
         stdin, stdout, stderr = con.exec_command(command)
 
-        retval = stdout.read().decode().removesuffix('\n')
+        retval = stdout.read().decode().rstrip()
 
         print(f'stdout: {retval}, {stderr.read()=}')
 
