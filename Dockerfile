@@ -4,8 +4,10 @@
 # FROM python:windowsservercore-ltsc2022
 
 # Use the .NET Framework runtime image
-FROM mcr.microsoft.com/dotnet/framework/runtime:4.8.1
+# FROM mcr.microsoft.com/dotnet/framework/runtime:4.8.1
 #AS base
+
+FROM mcr.microsoft.com/windows/server:ltsc2022
 
 USER ContainerAdministrator
 
@@ -61,5 +63,5 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 #       Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
 # }
 
-
+# keep container from this image running, when it's "docker run".
 CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]

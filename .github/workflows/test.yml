@@ -67,8 +67,8 @@ jobs:
     - name: "Run Hello World via paramiko, saving to .json, Python script"
       run: docker exec ssh_server python test_windows_dockerfile.py
       
-    # - name: upload special chars files
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: special_chars
-    #     path: test.json
+    - name: upload special chars files
+      uses: actions/upload-artifact@v3
+      with:
+        name: special_chars
+        path: test.json
