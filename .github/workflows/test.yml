@@ -36,7 +36,7 @@ jobs:
 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
-      run: docker run --rm -d  --name ssh_server powershell_windows_ssh_server
+      run: docker run --rm -d --volume .:. --name ssh_server powershell_windows_ssh_server
         
     # - name: "Build the Windows Dockerfile" 
     #   run: docker build -t python_windows_http_server .
@@ -52,11 +52,18 @@ jobs:
 
     # - run: ssh ssh@localhost
 
+    # 
+
+    - name: "Install Python script dependencies. "
+      run: >
+        pip install
+        paramiko
+
     - name: "Run Hello World via paramiko, saving to .json, Python script"
       run: docker exec ssh_server python test_windows_dockerfile.py
       
-    # - name: upload special chars files
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: special_chars
-    #     path: test.json
+    - name: upload special chars files
+      uses: actions/upload-artifact@v3
+      with:
+        name: special_chars
+        path: test.json
