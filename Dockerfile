@@ -1,7 +1,25 @@
 # escape=`
 
 
-FROM python:windowsservercore-ltsc2022
+# FROM python:windowsservercore-ltsc2022
+
+# Use the .NET Framework runtime image
+FROM mcr.microsoft.com/dotnet/framework/runtime:4.8.1
+#AS base
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# # Install Python
+# RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; `
+#     Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; `
+#     Remove-Item python-installer.exe
+
+# # Test Python installation
+# RUN python --version
+
+RUN Get-WindowsCapability -Online | Where-Object Name -like 'python*'
+
+RUN Get-WindowsCapability -Online | Where-Object Name -like 'Python*'
+
 
 SHELL ["cmd.exe", "/C"]
 # "Add local user"
