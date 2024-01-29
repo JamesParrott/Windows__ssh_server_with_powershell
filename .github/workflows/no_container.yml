@@ -21,6 +21,8 @@ jobs:
     - name: "Check if in admin group"
       run: (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
+    - name: "Check if OpenSSH already available"
+      run: Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 
     # - uses: actions/setup-python@v5
     #   with:
