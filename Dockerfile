@@ -270,6 +270,8 @@ SHELL ["c:\\PS7\\pwsh.EXE", "-Command"]
 
 RUN c:\PS7\Install-PowerShellRemoting.ps1
 
+WORKDIR c:\OpenSSH-Win64\
+
 # Install SSH	
 ADD https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.2.2.0p1-Beta/OpenSSH-Win64.zip c:\openssh.zip
 RUN Expand-Archive c:\openssh.zip c:\ ; Remove-Item c:\openssh.zip
@@ -278,7 +280,6 @@ RUN c:\OpenSSH-Win64\Install-SSHd.ps1
 # Configure SSH
 COPY sshd_config c:\OpenSSH-Win64\sshd_config
 COPY sshd_banner c:\OpenSSH-Win64\sshd_banner
-WORKDIR c:\OpenSSH-Win64\
 
 
 SHELL ["cmd.exe", "/C"]
@@ -309,7 +310,7 @@ RUN .\Install-sshd.ps1; `
 
 # EXPOSE 22
 
-WORKDIR c:\test_ssh_script
+# WORKDIR c:\test_ssh_script
 
 # ENTRYPOINT ["c:\PS7\pwsh.EXE"]
 
