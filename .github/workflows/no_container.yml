@@ -12,7 +12,7 @@ jobs:
 
 
   build_and_test:
-    name: "Build and test ssh-server in Windows Docker container, using Python script."
+    name: "Run OpenSSH Daemon in a Windows Runner, and test it using Python."
     runs-on: windows-2022
 
     steps:
