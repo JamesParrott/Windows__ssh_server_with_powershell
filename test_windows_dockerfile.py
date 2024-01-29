@@ -31,7 +31,8 @@ def make_paramiko_repr(
 
     def _repr_paramiko(c: str) -> str:
 
-        command = f"{PYTHON[distro]} -X utf8 -c 'import sys; print(repr(sys.argv[1]))' {c} 'echo oops_this_arg_was_run'"
+        # command = f"{PYTHON[distro]} -X utf8 -c 'import sys; print(repr(sys.argv[1]))' {c} 'echo oops_this_arg_was_run'"
+        command = f'{PYTHON[distro]} -X utf8 -c "import sys; print(repr(sys.argv[1]))" {c} "echo oops_this_arg_was_run"'
 
         stdin, stdout, stderr = con.exec_command(command)
 
