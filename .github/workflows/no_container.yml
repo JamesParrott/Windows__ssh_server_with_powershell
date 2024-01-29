@@ -1,5 +1,5 @@
 
-name: test_windows_dockerfile
+name: test_windows_runner_image
 
 on:
   # push:

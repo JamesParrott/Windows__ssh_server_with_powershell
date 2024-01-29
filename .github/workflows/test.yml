@@ -2,8 +2,8 @@
 name: test_windows_dockerfile
 
 on:
-  # push:
-  #   branches: ["main"]
+  push:
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
