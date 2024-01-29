@@ -36,7 +36,7 @@ jobs:
 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
-      run: docker run --rm -d --volume ${{ github.workspace }}:c:\OpenSSH-Win64\ --name ssh_server powershell_windows_ssh_server
+      run: docker run --rm -d --name ssh_server --volume ${{ github.workspace }}:c:\OpenSSH-Win64\  powershell_windows_ssh_server
         
     # - name: "Build the Windows Dockerfile" 
     #   run: docker build -t python_windows_http_server .
@@ -54,9 +54,11 @@ jobs:
 
     # 
 
+    - run: docker container ps --all
+
     - name: "Install Python script dependencies. "
       run: >
-        pip install
+        docker exec ssh_server pip install
         paramiko
 
     - name: "Run Hello World via paramiko, saving to .json, Python script"
