@@ -20,12 +20,13 @@ def make_paramiko_repr(
     username: str,
     password: str = 'password_123',
     ip_address: str = 'localhost',
+    port: int = 22,
     ):
 
     con = paramiko.SSHClient()
     con.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     # con.connect('localhost', username=username, password=password)
-    con.connect(ip_address, port=22, username=username, password=password)
+    con.connect(ip_address, port=port, username=username, password=password)
     con.invoke_shell()
 
     def _repr_paramiko(c: str) -> str:
@@ -111,7 +112,7 @@ distro, shell = 'windows', 'powershell'
 #             json.dump(f, {"paramiko_repr_output": output})
 
 
-with make_paramiko_repr(distro, 'ssh', 'Passw0rd') as paramiko_repr:
+with make_paramiko_repr(distro, username='ssh', password='Passw0rd', port=2222) as paramiko_repr:
     output = paramiko_repr('"Hello world"')
     print(f'Paramiko output: {output}')
     with open('test.json', 'wt') as f:

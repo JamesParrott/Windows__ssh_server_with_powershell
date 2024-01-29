@@ -1,0 +1,79 @@
+
+name: test_windows_dockerfile
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+
+
+
+
+  build_and_test:
+    name: "Build and test ssh-server in Windows Docker container, using Python script."
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: "Check if in admin group"
+      run: (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+
+    # - uses: actions/setup-python@v5
+    #   with:
+    #     python-version: '3.10' 
+    # - run: >
+    #     pip install
+    #     paramiko
+    #     docker
+    #     dockerfile-generator
+        
+    # - name: "Cache the Docker image"
+    #   uses: ScribeMD/docker-cache@0.3.7
+    #   with:
+    #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
+        
+    # - name: "Build the Windows Dockerfile" 
+    #   run: docker build -t powershell_windows_ssh_server .
+
+    # - name: "Run the Windows Docker image" 
+    #   # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
+    #   run: docker run --rm -d --name ssh_server --volume ${{ github.workspace }}:c:\OpenSSH-Win64\  powershell_windows_ssh_server
+        
+    # - name: "Build the Windows Dockerfile" 
+    #   run: docker build -t python_windows_http_server .
+
+    # - name: "Run the Windows Docker image" 
+    #   run: docker run --rm -d -p 22:22 --name ssh_server python_windows_http_server
+
+    # - name: "Test the http server"
+    #   run: curl localhost:22
+
+    # - name: "Find Container IP address"
+    #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
+
+    # - run: ssh ssh@localhost
+
+    # 
+
+    # - run: docker container ps --all
+
+    # - name: "Install Python script dependencies. "
+    #   run: >
+    #     docker exec ssh_server pip install
+    #     paramiko
+
+    # - name: "Start the SSH server process"
+    #   run: docker exec -d ssh_server c:\\PS7\\pwsh.EXE -NoExit -Command Start-Service sshd 
+
+    # - name: "Run Hello World via paramiko, saving to .json, Python script"
+    #   run: docker exec ssh_server python test_windows_dockerfile.py
+      
+    # - name: upload special chars files
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: special_chars
+    #     path: test.json

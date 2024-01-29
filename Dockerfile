@@ -254,7 +254,7 @@
 
 FROM python:windowsservercore-ltsc2022
 
-USER ContainerAdministrator
+# USER ContainerAdministrator
 
 # SHELL ["pwsh.exe", "-Command"]
 
