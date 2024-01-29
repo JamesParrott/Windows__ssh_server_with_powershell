@@ -112,7 +112,7 @@ distro, shell = 'windows', 'powershell'
 #             json.dump(f, {"paramiko_repr_output": output})
 
 
-with make_paramiko_repr(distro, username='ssh', password='Passw0rd', port=2222) as paramiko_repr:
+with make_paramiko_repr(distro, username='ssh', password='Passw0rd', port=22) as paramiko_repr:
     output = paramiko_repr('"Hello world"')
     print(f'Paramiko output: {output}')
     with open('test.json', 'wt') as f:
