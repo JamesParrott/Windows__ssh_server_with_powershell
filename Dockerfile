@@ -15,7 +15,7 @@
 
 # FROM python:windowsservercore-ltsc2022
 
-FROM mcr.microsoft.com/powershell:lts-nanoserver-ltsc2022
+FROM mcr.microsoft.com/powershell:lts-7.2-nanoserver-ltsc2022
 
 USER ContainerAdministrator
 
@@ -26,12 +26,14 @@ WORKDIR c:\OpenSSH-Win64\
 # RUN Get-WindowsCapability -Online | Where-Object Name -like 'Python*'
 
 
-# SHELL ["cmd.exe", "/C"]
+SHELL ["cmd.exe", "/C"]
 # "Add local user"
-RUN cmd.exe "/C" net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
+# RUN cmd.exe "/C" net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
+RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
 # SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
+SHELL ["pwsh.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # Install Python
 RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; `
