@@ -7,7 +7,9 @@
 # FROM mcr.microsoft.com/dotnet/framework/runtime:4.8.1
 #AS base
 
-FROM mcr.microsoft.com/windows/server:ltsc2022
+# FROM mcr.microsoft.com/windows/server:ltsc2022
+
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 USER ContainerAdministrator
 
