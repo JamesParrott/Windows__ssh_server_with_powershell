@@ -33,11 +33,18 @@ jobs:
         
 
 
+    # - name: "Build the Windows Dockerfile" 
+    #   run: >
+    #     docker build 
+    #     --build-arg USERNAME=${{ env.USERNAME }}
+    #     --build-arg PASSWORD=${{ env.PASSWORD }}
+    #     --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
+    #     -t powershell_windows_ssh_server
+    #     .
+
     - name: "Build the Windows Dockerfile" 
       run: >
         docker build 
-        --build-arg USERNAME=${{ env.USERNAME }}
-        --build-arg PASSWORD=${{ env.PASSWORD }}
         --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
         -t powershell_windows_ssh_server
         .
@@ -63,7 +70,8 @@ jobs:
         --env ${{ env.TEST_ENV_VAR }}=Hello_World_from_container_ssh_server
         --name ssh_server 
         powershell_windows_ssh_server
-        
+        ${{ env.USERNAME }}
+        ${{ env.PASSWORD }}
 
 
     - uses: actions/setup-python@v5

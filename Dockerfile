@@ -26,11 +26,11 @@ USER ContainerAdministrator
 # likely be installed elsewhere (by Add-WindowsCapability below).
 WORKDIR c:\OpenSSH-Win64\
 
-SHELL ["cmd.exe", "/C"]
+# SHELL ["cmd.exe", "/C"]
 
-# "Add local user"
-# RUN net USER ${USERNAME} ${PASSWORD}  /ADD && net localgroup "Administrators" ${USERNAME} /ADD
-RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
+# # "Add local user"
+# # RUN net USER ${USERNAME} ${PASSWORD}  /ADD && net localgroup "Administrators" ${USERNAME} /ADD
+# RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -71,3 +71,5 @@ EXPOSE ${PORT}
 
 # keep container from this image running, when it's "docker run".
 CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
+
+ENTRYPOINT ["cmd.exe", "/c", "set_user_and_keep_container_running.bat"]
