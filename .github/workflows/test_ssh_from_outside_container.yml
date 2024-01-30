@@ -48,7 +48,7 @@ jobs:
         docker build 
         -t 
         --build-arg USERNAME=${{ env.USERNAME }}
-        --build-arg PASSWORD=${{ steps.sets-password.outputs.password }}"
+        --build-arg PASSWORD=${{ steps.sets-password.outputs.password }}
         --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
         powershell_windows_ssh_server .
 
