@@ -30,19 +30,27 @@ jobs:
     #   with:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
         
-    - name: "Build the Windows Dockerfile" 
-      run: docker build -t powershell_windows_ssh_server .
 
     # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
-    - id: sets-a-secret
-      name: Generate, mask, and output a secret
+    - id: sets-password
+      name: Generate password
       run: |
-        the_secret=$((RANDOM))
-        echo "::add-mask::$the_secret"
-        echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
-    - name: Use that secret output (protected by a mask)
+        python print_password_to_.py >> "$GITHUB_OUTPUT"
+      # the_secret=$((RANDOM))
+      # echo "::add-mask::$the_secret"
+      # echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
+    - name: Print the password
       run: |
-        echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
+        echo "Log on with username: ${{ env.USERNAME }} and password: ${{ steps.sets-password.outputs.password }}"
+
+    - name: "Build the Windows Dockerfile" 
+      run: >
+        docker build 
+        -t 
+        --build-arg USERNAME=${{ env.USERNAME }}
+        --build-arg PASSWORD=${{ steps.sets-password.outputs.password }}"
+        --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
+        powershell_windows_ssh_server .
 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
@@ -63,9 +71,6 @@ jobs:
         -d 
         -p ${{ env.RUNNER_HOST_SSH_PORT }}:${{ env.CONTAINER_SSH_PORT }} 
         --env ${{ env.TEST_ENV_VAR }}=Hello_World_from_container_ssh_server
-        --build-arg USERNAME=${{ env.USERNAME }}
-        --build-arg PASSWORD=${{ steps.sets-a-secret.outputs.secret-number }}"
-        -- build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
         --name ssh_server 
         powershell_windows_ssh_server
         
@@ -80,7 +85,7 @@ jobs:
         python 
         ssh_from_outside_container.py 
         ${{ env.USERNAME }} 
-        ${{ steps.sets-a-secret.outputs.secret-number }}"
+        ${{ steps.sets-password.outputs.password }}
         ${{ env.RUNNER_HOST_SSH_PORT }} 
         ${{ env.TEST_ENV_VAR }}
 
