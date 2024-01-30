@@ -2,7 +2,7 @@
 name: test_windows_dockerfile
 
 on:
-  # push:
+  push:
     # branches: ["main"]
   workflow_dispatch:
 
@@ -17,14 +17,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    # - uses: actions/setup-python@v5
-    #   with:
-    #     python-version: '3.10' 
-    # - run: >
-    #     pip install
-    #     paramiko
-    #     docker
-    #     dockerfile-generator
+
         
     # - name: "Cache the Docker image"
     #   uses: ScribeMD/docker-cache@0.3.7
@@ -36,7 +29,8 @@ jobs:
 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
-      run: docker run --rm -d --name ssh_server --volume ${{ github.workspace }}:c:\OpenSSH-Win64\  powershell_windows_ssh_server
+      # run: docker run --rm -d --name ssh_server --volume ${{ github.workspace }}:c:\OpenSSH-Win64\  powershell_windows_ssh_server
+      run: docker run --rm -d --name ssh_server  powershell_windows_ssh_server
         
     # - name: "Build the Windows Dockerfile" 
     #   run: docker build -t python_windows_http_server .
@@ -56,17 +50,28 @@ jobs:
 
     - run: docker container ps --all
 
-    - name: "Install Python script dependencies. "
-      run: >
-        docker exec ssh_server pip install
-        paramiko
+    # - name: "Install Python script dependencies. "
+    #   run: >
+    #     docker exec ssh_server pip install
+    #     paramiko
 
     # - name: "Start the SSH server process"
     #   run: docker exec -d ssh_server c:\\PS7\\pwsh.EXE -NoExit -Command Start-Service sshd 
 
-    - name: "Run Hello World via paramiko, saving to .json, Python script"
-      run: docker exec ssh_server python test_windows_dockerfile.py
-      
+    # - name: "Run Hello World via paramiko, saving to .json, Python script"
+    #   run: docker exec ssh_server python test_windows_dockerfile.py
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' 
+    - run: >
+        pip install
+        paramiko
+        docker
+        dockerfile-generator
+    - name: "Run Hello World via paramiko, from outside container, saving to .json, Python script"
+      run: python ssh_from_outside_container.py
+
     - name: upload special chars files
       uses: actions/upload-artifact@v3
       with:
