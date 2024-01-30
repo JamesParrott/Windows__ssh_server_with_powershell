@@ -3,13 +3,11 @@ name: test_windows_dockerfile
 
 on:
   push:
-    # branches: ["main"]
+    branches: ["main"]
   workflow_dispatch:
 
 env:
   USERNAME: ssh
-  PASSWORD: $((RANDOM))
-  # PASSWORD: Passw0rd
   CONTAINER_SSH_PORT: 22
   RUNNER_HOST_SSH_PORT: 22
   TEST_ENV_VAR: TEST_MESSAGE
@@ -35,6 +33,17 @@ jobs:
     - name: "Build the Windows Dockerfile" 
       run: docker build -t powershell_windows_ssh_server .
 
+    # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
+    - id: sets-a-secret
+      name: Generate, mask, and output a secret
+      run: |
+        the_secret=$((RANDOM))
+        echo "::add-mask::$the_secret"
+        echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
+    - name: Use that secret output (protected by a mask)
+      run: |
+        echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
+
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
       # run: docker run --rm -d --name ssh_server --volume ${{ github.workspace }}:c:\OpenSSH-Win64\  powershell_windows_ssh_server
@@ -55,7 +64,7 @@ jobs:
         -p ${{ env.RUNNER_HOST_SSH_PORT }}:${{ env.CONTAINER_SSH_PORT }} 
         --env ${{ env.TEST_ENV_VAR }}=Hello_World_from_container_ssh_server
         --build-arg USERNAME=${{ env.USERNAME }}
-        --build-arg PASSWORD=${{ env.PASSWORD }}
+        --build-arg PASSWORD=${{ steps.sets-a-secret.outputs.secret-number }}"
         -- build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
         --name ssh_server 
         powershell_windows_ssh_server
@@ -71,7 +80,7 @@ jobs:
         python 
         ssh_from_outside_container.py 
         ${{ env.USERNAME }} 
-        ${{ env.PASSWORD }} 
+        ${{ steps.sets-a-secret.outputs.secret-number }}"
         ${{ env.RUNNER_HOST_SSH_PORT }} 
         ${{ env.TEST_ENV_VAR }}
 
