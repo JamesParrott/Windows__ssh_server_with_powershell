@@ -35,22 +35,22 @@ jobs:
     - id: sets-password
       name: Generate password
       run: |
+        python print_password_to_.py
         python print_password_to_.py >> "$GITHUB_OUTPUT"
       # the_secret=$((RANDOM))
       # echo "::add-mask::$the_secret"
       # echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
-    - name: Print the password
-      run: |
-        echo "Log on with username: ${{ env.USERNAME }} and password: ${{ steps.sets-password.outputs.password }}"
+    # - name: Print the password
+    #   run: echo "Log on with username: ${{ env.USERNAME }} and password: ${{ steps.sets-password.outputs.password }}"
 
     - name: "Build the Windows Dockerfile" 
       run: >
         docker build 
-        -t 
         --build-arg USERNAME=${{ env.USERNAME }}
         --build-arg PASSWORD=${{ steps.sets-password.outputs.password }}
         --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
-        powershell_windows_ssh_server .
+        -t powershell_windows_ssh_server
+        .
 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
