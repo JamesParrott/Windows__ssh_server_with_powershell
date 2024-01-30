@@ -26,11 +26,11 @@ WORKDIR c:\OpenSSH-Win64\
 # RUN Get-WindowsCapability -Online | Where-Object Name -like 'Python*'
 
 
-SHELL ["cmd.exe", "/C"]
+# SHELL ["cmd.exe", "/C"]
 # "Add local user"
-RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
+RUN cmd.exe "/C" net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+# SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 
 # Install Python
