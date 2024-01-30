@@ -15,7 +15,7 @@
 
 # FROM python:windowsservercore-ltsc2022
 
-FROM powershell:lts-nanoserver-ltsc2022
+FROM mcr.microsoft.com/powershell:lts-nanoserver-ltsc2022
 
 USER ContainerAdministrator
 
