@@ -16,9 +16,9 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 # to use secrets when building images.  
 # "
 # https://docs.docker.com/engine/reference/builder/#arg
-ARG USERNAME ssh
-ARG PASSWORD "Passw0rd"
-ARG PORT 22
+ARG USERNAME
+ARG PASSWORD
+ARG PORT
 
 USER ContainerAdministrator
 
@@ -66,7 +66,7 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 #       Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
 # }
 
-EXPOSE PORT
+EXPOSE ${PORT}
 
 # keep container from this image running, when it's "docker run".
 CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
