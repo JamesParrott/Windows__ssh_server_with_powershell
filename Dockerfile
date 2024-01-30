@@ -29,7 +29,8 @@ WORKDIR c:\OpenSSH-Win64\
 SHELL ["cmd.exe", "/C"]
 
 # "Add local user"
-RUN net USER ${USERNAME} ${PASSWORD}  /ADD && net localgroup "Administrators" ${USERNAME} /ADD
+# RUN net USER ${USERNAME} ${PASSWORD}  /ADD && net localgroup "Administrators" ${USERNAME} /ADD
+RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
