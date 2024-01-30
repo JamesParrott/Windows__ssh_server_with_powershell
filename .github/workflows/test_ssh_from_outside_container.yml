@@ -8,6 +8,7 @@ on:
 
 env:
   USERNAME: ssh
+  PASSWORD: Passw0rd
   CONTAINER_SSH_PORT: 22
   RUNNER_HOST_SSH_PORT: 22
   TEST_ENV_VAR: TEST_MESSAGE
@@ -31,23 +32,12 @@ jobs:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
         
 
-    # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
-    - id: sets-password
-      name: Generate password
-      run: |
-        python print_password_to_.py
-        python print_password_to_.py >> "$GITHUB_OUTPUT"
-      # the_secret=$((RANDOM))
-      # echo "::add-mask::$the_secret"
-      # echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
-    # - name: Print the password
-    #   run: echo "Log on with username: ${{ env.USERNAME }} and password: ${{ steps.sets-password.outputs.password }}"
 
     - name: "Build the Windows Dockerfile" 
       run: >
         docker build 
         --build-arg USERNAME=${{ env.USERNAME }}
-        --build-arg PASSWORD=${{ steps.sets-password.outputs.password }}
+        --build-arg PASSWORD=${{ env.PASSWORD }}
         --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
         -t powershell_windows_ssh_server
         .
@@ -85,7 +75,7 @@ jobs:
         python 
         ssh_from_outside_container.py 
         ${{ env.USERNAME }} 
-        ${{ steps.sets-password.outputs.password }}
+        ${{ env.PASSWORD }}
         ${{ env.RUNNER_HOST_SSH_PORT }} 
         ${{ env.TEST_ENV_VAR }}
 
