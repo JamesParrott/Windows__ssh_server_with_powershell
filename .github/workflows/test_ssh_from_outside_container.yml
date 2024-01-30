@@ -19,7 +19,7 @@ jobs:
 
 
   build_and_test:
-    name: "Build and test ssh-server in Windows Docker container, using Python script."
+    name: "Build ssh-server in Windows Docker container, and test using Python script."
     runs-on: windows-2022
 
     steps:

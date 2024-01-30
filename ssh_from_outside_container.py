@@ -2,7 +2,7 @@ import sys
 
 import fabric
 
-username, password, port, env_var = sys.argv[1:4]
+username, password, port, env_var = sys.argv[1:5]
 
 with fabric.Connection(
         'localhost',
