@@ -1,46 +1,46 @@
 # escape=`
 
-
-# FROM python:windowsservercore-ltsc2022
-
-# Use the .NET Framework runtime image
-# FROM mcr.microsoft.com/dotnet/framework/runtime:4.8.1
-#AS base
-
-# FROM mcr.microsoft.com/windows/server:ltsc2022
-
+# The tag (2022 or 2019) should match that of the Windows host, 
+# e.g. the version of the Windows github Actions runner image.
+# servercore has Powershell installed, and set as default shell.
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+
+# " 
+# WARNING 
+# It is not recommended to use build-time variables for passing secrets 
+# like GitHub keys, user credentials etc. Build-time variable values are 
+# visible to any user of the image with the docker history command.
+
+# Refer to the RUN --mount=type=secret section to learn about secure ways 
+# to use secrets when building images.  
+# "
+# https://docs.docker.com/engine/reference/builder/#arg
+ARG USERNAME ssh
+ARG PASSWORD "Passw0rd"
+ARG PORT 22
 
 USER ContainerAdministrator
 
+# Use same Workdir as Martin's Dockerfile, even though OpenSSH will most
+# likely be installed elsewhere (by Add-WindowsCapability below).
 WORKDIR c:\OpenSSH-Win64\
 
-# RUN Get-WindowsCapability -Online | Where-Object Name -like 'python*'
-
-# RUN Get-WindowsCapability -Online | Where-Object Name -like 'Python*'
-
-
 SHELL ["cmd.exe", "/C"]
+
 # "Add local user"
-RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
+RUN net USER ${USERNAME} ${PASSWORD}  /ADD && net localgroup "Administrators" ${USERNAME} /ADD
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-
-# Install Python
-# RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; `
-#     Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; `
-#     Remove-Item python-installer.exe
-
-# # Test Python installation
-# RUN python --version
-
+# Hencefoth, commands taken from "Get started with OpenSSH for Windows", from Microsfot Learn.
+# https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
 
 # "Check if in admin group"
-RUN (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+# RUN (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 # "Check if OpenSSH already available"
-RUN Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+# RUN Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 
 
 # # "Install the OpenSSH Client"
@@ -55,7 +55,6 @@ RUN Start-Service sshd
 # "OPTIONAL but recommended"
 RUN Set-Service -Name sshd -StartupType 'Automatic'
 
-EXPOSE 22
 
 # "Confirm the Firewall rule is configured. " 
 #   # It should be created automatically by setup. Run the following to verify"
@@ -66,6 +65,8 @@ EXPOSE 22
 #     } else {
 #       Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
 # }
+
+EXPOSE PORT
 
 # keep container from this image running, when it's "docker run".
 CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
