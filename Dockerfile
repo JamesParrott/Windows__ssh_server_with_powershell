@@ -9,7 +9,13 @@
 
 # FROM mcr.microsoft.com/windows/server:ltsc2022
 
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
+# FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+# FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
+
+# FROM python:windowsservercore-ltsc2022
+
+FROM mcr.microsoft.com/powershell:lts-7.2-nanoserver-ltsc2022
 
 USER ContainerAdministrator
 
@@ -22,18 +28,28 @@ WORKDIR c:\OpenSSH-Win64\
 
 SHELL ["cmd.exe", "/C"]
 # "Add local user"
+# RUN cmd.exe "/C" net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
+# SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+SHELL ["C:\\Program Files\\PowerShell\\pwsh.exe", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# SHELL ["C:\\Program Files\\PowerShell\\pwsh.exe", "-Command"]
 
 # Install Python
-RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; `
-    Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; `
-    Remove-Item python-installer.exe
+# RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; `
+#     Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; `
+#     Remove-Item python-installer.exe
+RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; 
+RUN Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; 
+RUN Remove-Item python-installer.exe
+
+RUN setx PATH "%PATH%;%ProgramFiles%\PowerShell;" /M
 
 # Test Python installation
-RUN python --version
+RUN ["C:\\Program Files\\Python39\\python.exe" "--version"]
 
 
 # "Check if in admin group"
@@ -43,7 +59,7 @@ RUN (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsI
 RUN Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 
 
-# # "Install the OpenSSH Client"
+# # "Install the OpenSSH Client.  "
 # RUN Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 
 # "Install the OpenSSH Server"
