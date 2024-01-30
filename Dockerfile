@@ -13,7 +13,9 @@
 
 # FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
 
-FROM python:windowsservercore-ltsc2022
+# FROM python:windowsservercore-ltsc2022
+
+FROM powershell:lts-nanoserver-ltsc2022
 
 USER ContainerAdministrator
 
@@ -31,13 +33,13 @@ RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 
-# # Install Python
-# RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; `
-#     Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; `
-#     Remove-Item python-installer.exe
+# Install Python
+RUN Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe" -OutFile "python-installer.exe"; `
+    Start-Process python-installer.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; `
+    Remove-Item python-installer.exe
 
-# # Test Python installation
-# RUN python --version
+# Test Python installation
+RUN python --version
 
 
 # "Check if in admin group"
@@ -47,7 +49,7 @@ RUN (New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsI
 RUN Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 
 
-# # "Install the OpenSSH Client"
+# # "Install the OpenSSH Client.  "
 # RUN Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 
 # "Install the OpenSSH Server"
