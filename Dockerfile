@@ -55,6 +55,8 @@ RUN Start-Service sshd
 # "OPTIONAL but recommended"
 RUN Set-Service -Name sshd -StartupType 'Automatic'
 
+EXPOSE 22
+
 # "Confirm the Firewall rule is configured. " 
 #   # It should be created automatically by setup. Run the following to verify"
 # RUN >
