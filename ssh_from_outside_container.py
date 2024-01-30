@@ -6,7 +6,7 @@ username, password, port, env_var = sys.argv[1:5]
 
 with fabric.Connection(
         'localhost',
-        username = username,
+        user = username,
         port = port,
         connect_kwargs ={'password' : password}
         ) as c:
