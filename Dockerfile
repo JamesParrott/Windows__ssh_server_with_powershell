@@ -17,7 +17,12 @@ SHELL ["cmd.exe", "/C"]
 # "Add local user"
 RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
+
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Optional.  Set Powershell as default Shell.  
+RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name Shell -Value 'PowerShell.exe -NoExit'
+
 
 ###################################################################################################################
 # Hencefoth, commands taken from "Get started with OpenSSH for Windows", from Microsoft Learn.
