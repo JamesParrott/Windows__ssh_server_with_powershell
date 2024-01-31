@@ -34,7 +34,7 @@ WORKDIR c:\OpenSSH-Win64\
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Hencefoth, commands taken from "Get started with OpenSSH for Windows", from Microsfot Learn.
+# Hencefoth, commands taken from "Get started with OpenSSH for Windows", from Microsoft Learn.
 # https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
 
 # "Check if in admin group"
