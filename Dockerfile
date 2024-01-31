@@ -70,6 +70,6 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 EXPOSE ${PORT}
 
 # keep container from this image running, when it's "docker run".
-CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
+# CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
 
 ENTRYPOINT ["cmd.exe", "/c", "set_user_and_keep_container_running.bat"]
