@@ -13,6 +13,6 @@ with fabric.Connection(
         ) as c:
     # print(c.run(f'echo %{env_var}%'))
     # print(c.run(f'Write-Host $env:{env_var}'))
-    print(c.run('Write-Host "Hello_World"'))
-    print(c.run('$PSVersionTable'))
-    # print(c.run(f'echo Hello World!'))
+    # print(c.run('Write-Host "Hello_World"'))
+    # print(c.run('$PSVersionTable'))
+    print(c.run(f'echo Hello World!'))
