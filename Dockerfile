@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 USER ContainerAdministrator
 
+# To match Martin's Dockerfile.  OpensSH is likely to be installed elsewhere.
 WORKDIR c:\OpenSSH-Win64\
 
 # servercore already has Powershell installed, and set as the default shell,
@@ -19,9 +20,6 @@ RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-
-# Optional.  Set Powershell as default Shell.  
-RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name Shell -Value 'PowerShell.exe -NoExit'
 
 
 ###################################################################################################################
@@ -60,6 +58,14 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 #
 #
 ###################################################################################################################
+
+# # Optional.  Set Powershell as default Shell.  
+# RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name Shell -Value 'PowerShell.exe -NoExit'
+
+# Set PS as default shell
+RUN New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; `
+    New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value powershell -PropertyType string -Force ; 
+    # New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps6\pwsh.exe -PropertyType string -Force ; 
 
 EXPOSE 22
 
