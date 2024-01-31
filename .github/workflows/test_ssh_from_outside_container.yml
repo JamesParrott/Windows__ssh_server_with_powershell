@@ -70,7 +70,7 @@ jobs:
     #     docker
     #     dockerfile-generator
     - run: pip install fabric
-    - name: "Run Hello World via paramiko, from outside container, saving to .json, Python script"
+    - name: "Print Hello World (via Python and Fabric), from outside container. "
       run: python ssh_from_outside_container.py
 
     # - name: upload special chars files

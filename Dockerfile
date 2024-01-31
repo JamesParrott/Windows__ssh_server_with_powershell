@@ -25,7 +25,8 @@ RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\W
 
 
 ###################################################################################################################
-# Hencefoth, commands taken from "Get started with OpenSSH for Windows", from Microsoft Learn.
+# The commands in this block are taken from "Get started with OpenSSH for Windows", from Microsoft Learn,
+# and prepended by "RUN " for use in a Dockerfile:
 # https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
 #
 # "Check if in admin group"
