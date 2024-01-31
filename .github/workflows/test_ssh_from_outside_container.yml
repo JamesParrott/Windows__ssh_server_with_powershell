@@ -3,15 +3,8 @@ name: test_windows_dockerfile
 
 on:
   push:
-    branches: ["main"]
+    # branches: ["main"]
   workflow_dispatch:
-
-env:
-  USERNAME: ssh
-  PASSWORD: Passw0rd
-  CONTAINER_SSH_PORT: 22
-  RUNNER_HOST_SSH_PORT: 22
-  TEST_ENV_VAR: TEST_MESSAGE
 
 jobs:
 
@@ -19,7 +12,7 @@ jobs:
 
 
   build_and_test:
-    name: "Build ssh-server in Windows Docker container, and test using Python script."
+    name: "Build and test ssh-server in Windows Docker container, using Python script."
     runs-on: windows-2022
 
     steps:
@@ -31,60 +24,56 @@ jobs:
     #   with:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
         
-
-
-    # - name: "Build the Windows Dockerfile" 
-    #   run: >
-    #     docker build 
-    #     --build-arg USERNAME=${{ env.USERNAME }}
-    #     --build-arg PASSWORD=${{ env.PASSWORD }}
-    #     --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
-    #     -t powershell_windows_ssh_server
-    #     .
-
     - name: "Build the Windows Dockerfile" 
-      run: >
-        docker build 
-        --build-arg PORT=${{ env.CONTAINER_SSH_PORT }}
-        -t powershell_windows_ssh_server
-        .
+      run: docker build -t powershell_windows_ssh_server .
 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
       # run: docker run --rm -d --name ssh_server --volume ${{ github.workspace }}:c:\OpenSSH-Win64\  powershell_windows_ssh_server
-      # " 
-      # WARNING 
-      # It is not recommended to use build-time variables for passing secrets 
-      # like GitHub keys, user credentials etc. Build-time variable values are 
-      # visible to any user of the image with the docker history command.
+      run: docker run --rm -d -p 22:22 --name ssh_server  powershell_windows_ssh_server
+        
+    # - name: "Build the Windows Dockerfile" 
+    #   run: docker build -t python_windows_http_server .
 
-      # Refer to the RUN --mount=type=secret section to learn about secure ways 
-      # to use secrets when building images.  
-      # "
-      # https://docs.docker.com/engine/reference/builder/#arg
-      run: > 
-        docker run 
-        --rm 
-        -d 
-        -p ${{ env.RUNNER_HOST_SSH_PORT }}:${{ env.CONTAINER_SSH_PORT }} 
-        --env ${{ env.TEST_ENV_VAR }}=Hello_World_from_container_ssh_server
-        --name ssh_server 
-        powershell_windows_ssh_server
-        ${{ env.USERNAME }}
-        ${{ env.PASSWORD }}
+    # - name: "Run the Windows Docker image" 
+    #   run: docker run --rm -d -p 22:22 --name ssh_server python_windows_http_server
 
+    # - name: "Test the http server"
+    #   run: curl localhost:22
+
+    # - name: "Find Container IP address"
+    #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
+
+    # - run: ssh ssh@localhost
+
+    # 
+
+    - run: docker container ps --all
+
+    # - name: "Install Python script dependencies. "
+    #   run: >
+    #     docker exec ssh_server pip install
+    #     paramiko
+
+    # - name: "Start the SSH server process"
+    #   run: docker exec -d ssh_server c:\\PS7\\pwsh.EXE -NoExit -Command Start-Service sshd 
+
+    # - name: "Run Hello World via paramiko, saving to .json, Python script"
+    #   run: docker exec ssh_server python test_windows_dockerfile.py
 
     - uses: actions/setup-python@v5
-      # with:
-      #   python-version: '3.10' 
-    - run: pip install fabric
-    - name: "Read the test message in the container via paramiko, and the SSH server, from outside the container"
-      run: >
-        python 
-        ssh_from_outside_container.py 
-        ${{ env.USERNAME }} 
-        ${{ env.PASSWORD }}
-        ${{ env.RUNNER_HOST_SSH_PORT }} 
-        ${{ env.TEST_ENV_VAR }}
+      with:
+        python-version: '3.10' 
+    - run: >
+        pip install
+        paramiko
+        docker
+        dockerfile-generator
+    - name: "Run Hello World via paramiko, from outside container, saving to .json, Python script"
+      run: python ssh_from_outside_container.py
 
-
+    - name: upload special chars files
+      uses: actions/upload-artifact@v3
+      with:
+        name: special_chars
+        path: test.json
