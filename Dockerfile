@@ -64,7 +64,7 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 
 # Set PS as default shell
 RUN New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; `
-    New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value powershell -PropertyType string -Force ; 
+    New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value 'PowerShell.exe -NoExit' -PropertyType string -Force ; 
     # New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps6\pwsh.exe -PropertyType string -Force ; 
 
 EXPOSE 22
