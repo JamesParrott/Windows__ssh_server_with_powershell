@@ -25,6 +25,12 @@ RUN c:/OpenSSH-Win64/ssh-keygen.exe -t dsa -N "" -f ssh_host_dsa_key && \
 # Create a user to login, as containeradministrator password is unknown
 RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
+# ChatGPT's suggestion as to how to add PS7 as user's default shell
+COPY Microsoft.PowerShell_profile.ps1 c:/Users/ssh/Microsoft.PowerShell_profile.ps1
+
+RUN c:/PS7/pwsh.exe -Command Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+
 # Set PS7 as default shell
 # RUN C:/PS7/pwsh.EXE -Command \
 #     New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; \
