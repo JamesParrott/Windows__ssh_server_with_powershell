@@ -14,45 +14,22 @@ jobs:
   build_and_test:
     name: "Build ssh-server in Windows Docker container, and smoke test it. "
     
-    # Martin's and Jonas' gists use ltsc 2019, so instead require: 
-    # runs-on: windows-2019
-    # (windows container OSs must match the host OS)
     runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v4
 
-    # Caching a large docker layer cache on a private repo's 
-    # slower runner takes longer to zip & unzip it 
-    # (tar is the problem?), 
-    # than to build the docker image from scratch, but 
-    # to cache the cache, uncomment:        
-    # - name: "Cache the Docker image"
-    #   uses: ScribeMD/docker-cache@0.3.7
-    #   with:
-    #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
 
-
-    # https://github.com/hadolint/hadolint
     - name: "Lint the Dockerfile with Hadolint. "
-    #   # shell: bash
-    #   # run: docker run --rm -i ghcr.io/hadolint/hadolint < Dockerfile
-    #   run: | 
-    #     scoop install hadolint
-    #     hadolint Dockerfile
       run: |
         Invoke-WebRequest https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Windows-x86_64.exe -OutFile hadolint.exe
         .\hadolint.exe Dockerfile
         Remove-Item .\hadolint.exe
-      # .\hadolint.exe --ignore DL3059 Dockerfile
 
 
     - name: "Build the Windows Docker image" 
       run: docker build -t powershell_windows_ssh_server .
 
-    # Give the container a name to find its IP address later, 
-    # (in "Find Container IP address" below).
-    # It can get assigned to something other than 127.0.0.1 in Windows. 
     - name: "Run the Windows Docker image" 
       shell: bash
       run: >
@@ -62,13 +39,6 @@ jobs:
         -p 22:22 
         --name ssh_server 
         powershell_windows_ssh_server
-
-    # - name: "Find Container IP address"
-    #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
-
-
-    # - name: Check Container did not stop (and is still running, and has name ssh_server). 
-    #   run: docker container ps --all
 
     - uses: actions/setup-python@v5
       with:
