@@ -10,6 +10,8 @@ USER ContainerAdministrator
 
 RUN dir C:\Windows\System32\
 
+RUN dir C:\Windows\System32\WindowsPowerShell\
+
 # # To match Martin's Dockerfile.  OpensSH is likely to be installed elsewhere.
 # WORKDIR c:\OpenSSH-Win64\
 
