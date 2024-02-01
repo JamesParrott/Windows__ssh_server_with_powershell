@@ -8,11 +8,6 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 USER ContainerAdministrator
 
-
-
-# To match Martin's Dockerfile.  OpensSH is likely to be installed elsewhere.
-WORKDIR c:\OpenSSH-Win64\
-
 # servercore already has Powershell installed, and set as the default shell,
 # but as Martin found, the next command doesn't work so well in Powershell, 
 # so is run in cmd.exe
