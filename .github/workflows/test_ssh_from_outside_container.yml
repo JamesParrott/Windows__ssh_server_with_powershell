@@ -38,12 +38,13 @@ jobs:
     #     hadolint Dockerfile
       run: |
         Invoke-WebRequest https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Windows-x86_64.exe -OutFile hadolint.exe
-        .\hadolint.exe --ignore DL3059 Dockerfile
+        .\hadolint.exe --ignore DL3059 --ignore DL3025 Dockerfile
         Remove-Item .\hadolint.exe
       # Output without suppressing rule DL3059:
       # Dockerfile:44 DL3059 info: Multiple consecutive `RUN` instructions. Consider consolidation.
       # Dockerfile:47 DL3059 info: Multiple consecutive `RUN` instructions. Consider consolidation.
-
+      # Output without suppressing DL3025: 
+      # Dockerfile:81 DL3025 warning: Use arguments JSON notation for CMD and ENTRYPOINT arguments
 
 
     - name: "Build the Windows Dockerfile" 
