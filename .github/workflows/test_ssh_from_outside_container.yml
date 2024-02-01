@@ -13,6 +13,7 @@ jobs:
 
   build_and_test:
     name: "Build ssh-server in Windows Docker container, and smoke test it. "
+    
     # Martin's and Jonas' gists use ltsc 2019, so instead require: 
     # runs-on: windows-2019
     # (windows container OSs must match the host OS)
@@ -31,6 +32,7 @@ jobs:
     #   with:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
 
+
     # https://github.com/hadolint/hadolint
     - name: "Lint the Dockerfile with Hadolint. "
     #   # shell: bash
@@ -45,7 +47,7 @@ jobs:
       # .\hadolint.exe --ignore DL3059 Dockerfile
 
 
-    - name: "Build the Windows Dockerfile" 
+    - name: "Build the Windows Docker image" 
       run: docker build -t powershell_windows_ssh_server .
 
     # Give the container a name to find its IP address later, 
@@ -59,7 +61,6 @@ jobs:
         -d 
         -p 22:22 
         --name ssh_server 
-        --env RUN_TIME_ENV_MESSAGE="Set at container run time"
         powershell_windows_ssh_server
 
     # - name: "Find Container IP address"
@@ -76,7 +77,6 @@ jobs:
     - name: Install Python script's deps.
       run: pip install fabric
 
-
     - name: "Print Hello World (via Python and Fabric), from outside container. "
-      run: python ssh_from_outside_container.py ssh Passw0rd 22 RUN_TIME_ENV_MESSAGE
+      run: python ssh_from_outside_container.py ssh Passw0rd 22
 
