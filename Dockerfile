@@ -8,15 +8,14 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 USER ContainerAdministrator
 
-# RUN dir C:\Windows\System32\
 
-# RUN dir C:\Windows\System32\WindowsPowerShell\
 
 # To match Martin's Dockerfile.  OpensSH is likely to be installed elsewhere.
 WORKDIR c:\OpenSSH-Win64\
 
 # servercore already has Powershell installed, and set as the default shell,
-# but the next command doens't work so well in Powershell, so is run in cmd.exe
+# but as Martin found, the next command doesn't work so well in Powershell, 
+# so is run in cmd.exe
 SHELL ["cmd.exe", "/C"]
 
 # "Add local user"
@@ -26,12 +25,12 @@ RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 
-# Set the login shell to PowerShell
+# Set the login shell to PowerShell.  Without this line, the login shell is cmd.
 RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
 
 ###################################################################################################################
 # The commands in this block are taken from "Get started with OpenSSH for Windows", from Microsoft Learn,
-# and prepended by "RUN " for use in a Dockerfile:
+# and simply preppended by "RUN " for use in a Dockerfile:
 # https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
 #
 # "Check if in admin group"
@@ -66,21 +65,9 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 #
 ###################################################################################################################
 
-# # Optional.  Set Powershell as default Shell.  
-# RUN Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name Shell -Value 'PowerShell.exe -NoExit'
-
-# Set PS as default shell
-# RUN New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; `
-#     New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value 'PowerShell.exe -NoExit' -PropertyType string -Force ; 
-    # New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps6\pwsh.exe -PropertyType string -Force ; 
-
 # Expose port 22 for SSH
 EXPOSE 22
 
-# Start the SSH server
-# CMD powershell.exe -Command Get-Service sshd
-# CMD ["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"]
-# # keep container from this image running, when it's "docker run".
 
-# Ping self to keep alive
+# Ping self to keep container alive
 CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
