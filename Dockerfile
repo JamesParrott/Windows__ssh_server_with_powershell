@@ -8,7 +8,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 USER ContainerAdministrator
 
-RUN dir C:\Windows\System32\*Powershell*
+RUN dir C:\Windows\System32\
 
 # # To match Martin's Dockerfile.  OpensSH is likely to be installed elsewhere.
 # WORKDIR c:\OpenSSH-Win64\
