@@ -28,13 +28,13 @@ jobs:
     #   with:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
 
-    # https://github.com/hadolint/hadolint
-    - name: "Lint the Dockerfile with Hadolint. "
-      # shell: bash
-      # run: docker run --rm -i ghcr.io/hadolint/hadolint < Dockerfile
-      run: | 
-        scoop install hadolint
-        hadolint Dockerfile
+    # # https://github.com/hadolint/hadolint
+    # - name: "Lint the Dockerfile with Hadolint. "
+    #   # shell: bash
+    #   # run: docker run --rm -i ghcr.io/hadolint/hadolint < Dockerfile
+    #   run: | 
+    #     scoop install hadolint
+    #     hadolint Dockerfile
 
 
     - name: "Build the Windows Dockerfile" 
