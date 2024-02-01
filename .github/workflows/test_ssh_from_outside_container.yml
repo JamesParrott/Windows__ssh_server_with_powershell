@@ -40,11 +40,9 @@ jobs:
     #     hadolint Dockerfile
       run: |
         Invoke-WebRequest https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Windows-x86_64.exe -OutFile hadolint.exe
-        .\hadolint.exe --ignore DL3059 Dockerfile
+        .\hadolint.exe Dockerfile
         Remove-Item .\hadolint.exe
-      # Output without suppressing rule DL3059:
-      # Dockerfile:44 DL3059 info: Multiple consecutive `RUN` instructions. Consider consolidation.
-      # Dockerfile:47 DL3059 info: Multiple consecutive `RUN` instructions. Consider consolidation.
+      # .\hadolint.exe --ignore DL3059 Dockerfile
 
 
     - name: "Build the Windows Dockerfile" 
@@ -54,7 +52,15 @@ jobs:
     # (in "Find Container IP address" below).
     # It can get assigned to something other than 127.0.0.1 in Windows. 
     - name: "Run the Windows Docker image" 
-      run: docker run --rm -d -p 22:22 --name ssh_server  powershell_windows_ssh_server
+      shell: bash
+      run: >
+        docker run 
+        --rm 
+        -d 
+        -p 22:22 
+        --name ssh_server 
+        --env RUN_TIME_ENV_MESSAGE="Set at container run time"
+        powershell_windows_ssh_server
 
     # - name: "Find Container IP address"
     #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
@@ -72,5 +78,5 @@ jobs:
 
 
     - name: "Print Hello World (via Python and Fabric), from outside container. "
-      run: python ssh_from_outside_container.py ssh Passw0rd 22
+      run: python ssh_from_outside_container.py ssh Passw0rd 22 RUN_TIME_ENV_MESSAGE
 

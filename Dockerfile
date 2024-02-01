@@ -30,7 +30,7 @@ RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C
 
 ###################################################################################################################
 # The commands in this block are taken from "Get started with OpenSSH for Windows", from Microsoft Learn,
-# and simply preppended by "RUN " for use in a Dockerfile:
+# and simply preppended by "RUN " or combined into multi-line commands, for use in a Dockerfile:
 # https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
 #
 # "Check if in admin group"
@@ -44,13 +44,11 @@ RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C
 # RUN Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 #
 # "Install the OpenSSH Server"
-RUN Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-#
 # "Start the sshd service"
-RUN Start-Service sshd
-#
-# "OPTIONAL but recommended"
-RUN Set-Service -Name sshd -StartupType 'Automatic'
+# "OPTIONAL but recommended (to set startup type to auto)"
+RUN Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0; `
+    Start-Service sshd; `
+    RUN Set-Service -Name sshd -StartupType 'Automatic'
 #
 # "Confirm the Firewall rule is configured. " 
 #   # It should be created automatically by setup. Run the following to verify"
