@@ -16,18 +16,9 @@ with fabric.Connection(
     c.run('(dir 2>&1 *`|echo CMD);&<# rem #>echo $PSVersionTable'),
                 # Returns:CMD or $PSVersionTable
     
-    # Alternatives if using cmd as login shell
-    #     print(c.run(f'echo Hello World!'))
+    # Alternative if using cmd as login shell:
+    #     c.run(f'echo Hello World!')
     
-    print(c.run('Write-Host "Hello_World"'))
-#     print('CMD or PSVersionTable: Shell is: ',
-#                 # https://stackoverflow.com/a/61469226/20785734
-#           c.run('(dir 2>&1 *`|echo CMD);&<# rem #>echo $PSVersionTable'),
-#                 # Returns one of: CMD, Core, Desktop}')
-#           )  
-    
-#     # Alternatives if using cmd as login shell
-#     #     print(c.run(f'echo Hello World!'))
-    
-#     print(c.run('Write-Host "Hello_World"'))
+    c.run('Write-Host "Hello_World"')
+
 
