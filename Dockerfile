@@ -3,8 +3,8 @@
 # The tag year (e.g. 2022 or 2019) should match that of the Windows host, 
 # e.g. the version of the Windows github Actions runner image, that's
 # running the action that builds an image of this file.
-
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
+# hadolint shell=powershell
 
 USER ContainerAdministrator
 
