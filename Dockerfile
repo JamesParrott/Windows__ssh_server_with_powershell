@@ -48,7 +48,7 @@ RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C
 # "OPTIONAL but recommended (to set startup type to auto)"
 RUN Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0; `
     Start-Service sshd; `
-    RUN Set-Service -Name sshd -StartupType 'Automatic'
+    Set-Service -Name sshd -StartupType 'Automatic'
 #
 # "Confirm the Firewall rule is configured. " 
 #   # It should be created automatically by setup. Run the following to verify"
