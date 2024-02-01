@@ -5,7 +5,7 @@ USER ContainerAdministrator
 # Install Powershell
 ADD https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.zip c:/powershell.zip
 RUN powershell.exe -Command Expand-Archive c:/powershell.zip c:/PS7 ; Remove-Item c:/powershell.zip
-RUN C:/PS7/pwsh.EXE -Command C:/PS7/Install-PowerShellRemoting.ps1
+RUN C:/PS7/pwsh.exe -Command C:/PS7/Install-PowerShellRemoting.ps1
 
 # Install SSH	
 ADD https://github.com/PowerShell/Win32-OpenSSH/releases/download/v9.2.2.0p1-Beta/OpenSSH-Win64.zip c:/openssh.zip
@@ -36,10 +36,16 @@ RUN c:/PS7/pwsh.exe -Command Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 #     New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; \
 #     New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps7\pwsh.exe -PropertyType string -Force ; 
 
-RUN C:/PS7/pwsh.EXE -Command \
+RUN C:/PS7/pwsh.exe -Command \
     ./Install-sshd.ps1; \
     ./FixHostFilePermissions.ps1 -Confirm:$false;
 
 EXPOSE 22
-# For some reason SSH stops after build. So start it again when container runs.
-CMD [ "c:/ps7/pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd" ]
+
+RUN c:/PS7/pwsh.exe -NoExit -Command Start-Service sshd
+# # For some reason SSH stops after build. So start it again when container runs.
+# CMD [ "c:/ps7/pwsh.exe", "-NoExit", "-Command", "Start-Service" ,"sshd" ]
+
+
+# keep container from this image running, when it's "docker run".
+CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
