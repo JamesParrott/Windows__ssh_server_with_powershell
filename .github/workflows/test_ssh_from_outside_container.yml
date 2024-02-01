@@ -29,12 +29,17 @@ jobs:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
 
     # # https://github.com/hadolint/hadolint
-    # - name: "Lint the Dockerfile with Hadolint. "
+    - name: "Lint the Dockerfile with Hadolint. "
     #   # shell: bash
     #   # run: docker run --rm -i ghcr.io/hadolint/hadolint < Dockerfile
     #   run: | 
     #     scoop install hadolint
     #     hadolint Dockerfile
+      run: |
+        Invoke-WebRequest https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Windows-x86_64.exe -OutFile hadolint.exe
+        hadolint.exe Dockerfile
+        Remove-Item hadolint.exe
+
 
 
     - name: "Build the Windows Dockerfile" 
