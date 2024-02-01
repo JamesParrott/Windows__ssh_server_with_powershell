@@ -78,6 +78,9 @@ RUN Set-Service -Name sshd -StartupType 'Automatic'
 EXPOSE 22
 
 # Start the SSH server
-CMD powershell.exe -Command Start-Service sshd ; powershell.exe -Command Get-Service sshd
+# CMD powershell.exe -Command Get-Service sshd
+# CMD ["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"]
 # # keep container from this image running, when it's "docker run".
-# CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
+
+# Ping self to keep alive
+CMD ["cmd.exe", "/c", "ping", "-t", "localhost", ">", "NUL"]
