@@ -15,7 +15,7 @@ jobs:
     name: "Build and test ssh-server in Windows Docker container, using Python script."
     # Martin's and Jonas' gists use ltsc 2019, so instead require runs-on: windows-2019
     # (windows container OSs must match the host OS)
-    runs-on: windows-2022
+    runs-on: windows-2019
 
     steps:
     - uses: actions/checkout@v4
