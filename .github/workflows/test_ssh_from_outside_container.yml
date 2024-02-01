@@ -13,25 +13,53 @@ jobs:
 
   build_and_test:
     name: "Build and test ssh-server in Windows Docker container, using Python script."
+    # Martin's and Jonas' gists use ltsc 2019, so instead require runs-on: windows-2019
+    # (windows container OSs must match the host OS)
     runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v4
 
-        
+    # Caching a large docker layer cache on a private repo's 
+    # slower runner takes longer to zip & unzip it 
+    # (tar is the problem?), 
+    # than to build the docker image from scratch.        
     # - name: "Cache the Docker image"
     #   uses: ScribeMD/docker-cache@0.3.7
     #   with:
     #     key: docker-${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
-        
+
+    # # https://github.com/hadolint/hadolint
+    - name: "Lint the Dockerfile with Hadolint. "
+    #   # shell: bash
+    #   # run: docker run --rm -i ghcr.io/hadolint/hadolint < Dockerfile
+    #   run: | 
+    #     scoop install hadolint
+    #     hadolint Dockerfile
+      run: |
+        Invoke-WebRequest https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Windows-x86_64.exe -OutFile hadolint.exe
+        .\hadolint.exe Dockerfile
+        Remove-Item .\hadolint.exe
+      # Output without suppressing the two rules:
+      # Dockerfile:27 SC1001 info: This \p will be a regular 'p' in this context.
+      # Dockerfile:31 SC2086 info: Double quote to prevent globbing and word splitting.
+        # .\hadolint.exe --ignore SC1001 --ignore SC2086 Dockerfile
+
+
+
     - name: "Build the Windows Dockerfile" 
       run: docker build -t powershell_windows_ssh_server .
 
+    # Give the container a name to find its IP address later, 
+    # (in "Find Container IP address" below).
+    # It can get assigned to something other than 127.0.0.1 in Windows. 
     - name: "Run the Windows Docker image" 
       # run: docker run --rm -d -p 22:22 --name ssh_server powershell_windows_ssh_server
       # run: docker run --rm -d --name ssh_server --volume ${{ github.workspace }}:c:\OpenSSH-Win64\  powershell_windows_ssh_server
       run: docker run --rm -d -p 22:22 --name ssh_server  powershell_windows_ssh_server
-        
+    
+    # Rule out ssh specific problems, and rule out a networking issue, by running
+    # a dev-only http server.
     # - name: "Build the Windows Dockerfile" 
     #   run: docker build -t python_windows_http_server .
 
@@ -44,11 +72,9 @@ jobs:
     # - name: "Find Container IP address"
     #   run: docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" ssh_server
 
-    # - run: ssh ssh@localhost
 
-    # 
-
-    - run: docker container ps --all
+    - name: Check Container did not stop (and is still running, and has name ssh_server). 
+      run: docker container ps --all
 
     # - name: "Install Python script dependencies. "
     #   run: >
@@ -61,17 +87,24 @@ jobs:
     # - name: "Run Hello World via paramiko, saving to .json, Python script"
     #   run: docker exec ssh_server python test_windows_dockerfile.py
 
+
+
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10' 
+        python-version: '3.12' 
+
+    - name: Install Python script's deps.
+      run: pip install fabric
     # - run: >
     #     pip install
     #     paramiko
     #     docker
     #     dockerfile-generator
-    - run: pip install fabric
+
     - name: "Print Hello World (via Python and Fabric), from outside container. "
       run: python ssh_from_outside_container.py
+
+
 
     # - name: upload special chars files
     #   uses: actions/upload-artifact@v3
