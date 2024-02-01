@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
+USER ContainerAdministrator
+
 # Install Powershell
 ADD https://github.com/PowerShell/PowerShell/releases/download/v7.3.6/PowerShell-7.3.6-win-x64.zip c:/powershell.zip
 RUN powershell.exe -Command Expand-Archive c:/powershell.zip c:/PS7 ; Remove-Item c:/powershell.zip
@@ -24,9 +26,9 @@ RUN c:/OpenSSH-Win64/ssh-keygen.exe -t dsa -N "" -f ssh_host_dsa_key && \
 RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
 # Set PS7 as default shell
-RUN C:/PS7/pwsh.EXE -Command \
-    New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; \
-    New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps7\pwsh.exe -PropertyType string -Force ; 
+# RUN C:/PS7/pwsh.EXE -Command \
+#     New-Item -Path HKLM:\SOFTWARE -Name OpenSSH -Force; \
+#     New-ItemProperty -Path HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -Value c:\ps7\pwsh.exe -PropertyType string -Force ; 
 
 RUN C:/PS7/pwsh.EXE -Command \
     ./Install-sshd.ps1; \
