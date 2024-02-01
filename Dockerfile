@@ -8,19 +8,20 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 USER ContainerAdministrator
 
-# servercore already has Powershell installed, and set as the default shell,
-# but as Martin found, the next command doesn't work so well in Powershell, 
-# so is run in cmd.exe
+# servercore already has Powershell installed, and set as the default shell.
+# But as Martin found, the command after this one doesn't work in Powershell, 
+# so we switch shell to cmd.exe
 SHELL ["cmd.exe", "/C"]
 
-# "Add local user"
+# "Add local user" 
 RUN net USER ssh "Passw0rd" /ADD && net localgroup "Administrators" "ssh" /ADD
 
-
+# Common boilerplate.
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 
-# Set the login shell to PowerShell.  Without this line, the login shell is cmd.
+# Set the login shell (in the resulting container, not in this Dockerfile) to PowerShell.  
+# Without this line, the login shell is cmd.
 RUN New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
 
 ###################################################################################################################
