@@ -17,7 +17,8 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - run: dir "C:\Program Files\C*"  - Cmake and Common files
+      # Cmake and Common files
+      - run: dir "C:\Program Files\C*"
         
       # - run: dir "C:\Program Files\Caphyon\" - Errors
       - run: dir "C:\Program Files (x86)"
