@@ -1,0 +1,64 @@
+
+name: look_for_advanced_installer
+
+on:
+  push:
+    branches: ["Look-for-advanced-installer"]
+  workflow_dispatch:
+
+jobs:
+
+
+
+
+  build_and_test:
+    name: "Look-for-advanced-installer. "
+    
+    runs-on: windows-2022
+
+    steps:
+      - run: dir "C:\Program Files\C*"
+        
+      - run: dir "C:\Program Files\Caphyon\"
+      - run: dir "C:\Program Files (x86)"
+        
+      - run: dir "C:\Program Files (x86)\Caphyon\"
+      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\"
+      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\"
+      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\x86\"
+      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\x86\AdvancedInstaller.com"
+
+    # - uses: actions/checkout@v4
+
+
+
+    # - name: "Lint the Dockerfile with Hadolint. "
+    #   run: |
+    #     Invoke-WebRequest https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Windows-x86_64.exe -OutFile hadolint.exe
+    #     .\hadolint.exe Dockerfile
+    #     Remove-Item .\hadolint.exe
+
+
+    # - name: "Build the Windows Docker image" 
+    #   run: docker build -t powershell_windows_ssh_server .
+
+    # - name: "Run the Windows Docker image" 
+    #   shell: bash
+    #   run: >
+    #     docker run 
+    #     --rm 
+    #     -d 
+    #     -p 22:22 
+    #     --name ssh_server 
+    #     powershell_windows_ssh_server
+
+    # - uses: actions/setup-python@v5
+    #   with:
+    #     python-version: '3.12' 
+
+    # - name: Install Python script's deps.
+    #   run: pip install fabric
+
+    # - name: "Print Hello World (via Python and Fabric), from outside container. "
+    #   run: python ssh_from_outside_container.py ssh Passw0rd 22
+
