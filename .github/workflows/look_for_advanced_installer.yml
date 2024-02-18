@@ -23,6 +23,10 @@ jobs:
         with:
           advinst-version: '21.3'
 
+      - name: Echo path
+        shell: cmd 
+        run: echo %path%
+
         # advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
         # " advinst-license
         # Advanced Installer license ID. This parameter is optional if you are using a simple project type.
@@ -33,11 +37,11 @@ jobs:
       # - run: dir "C:\Program Files\Caphyon\" - Errors
       - run: dir "C:\Program Files (x86)"
         
-      - run: dir "C:\Program Files (x86)\Caphyon\"
-      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\"
-      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\"
-      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\x86\"
-      - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\x86\AdvancedInstaller.com"
+      # - run: dir "C:\Program Files (x86)\Caphyon\" - Errors
+      # - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\"
+      # - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\"
+      # - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\x86\"
+      # - run: dir "C:\Program Files (x86)\Caphyon\Advanced Installer 21.3\bin\x86\AdvancedInstaller.com"
 
     # - uses: actions/checkout@v4
 
