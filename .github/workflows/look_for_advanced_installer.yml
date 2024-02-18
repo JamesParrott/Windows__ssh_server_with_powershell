@@ -17,6 +17,16 @@ jobs:
     runs-on: windows-2022
 
     steps:
+
+      - name: Deploy Advinst
+        uses: caphyon/advinst-github-action@main
+        with:
+          advinst-version: '21.3'
+
+        # advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+        # " advinst-license
+        # Advanced Installer license ID. This parameter is optional if you are using a simple project type.
+        # "
       # Cmake and Common files
       - run: dir "C:\Program Files\C*"
         
