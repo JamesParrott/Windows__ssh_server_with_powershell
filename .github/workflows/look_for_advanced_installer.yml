@@ -18,6 +18,8 @@ jobs:
 
     steps:
 
+      - run: python -c "import this;"
+
       - name: Deploy Advinst
         uses: caphyon/advinst-github-action@main
         with:
