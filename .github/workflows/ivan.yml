@@ -1,11 +1,12 @@
 on:
-  workflow-dispatch:
+  workflow_dispatch:
   push:
     branches: [ "Look-for-advanced-installer" ]
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-  - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.6.x - 3.11.x'
+  setup-python:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.6.x - 3.11.x'
